@@ -1,69 +1,78 @@
 import tkinter as tk
 from limite.tela import Tela
-from entidade.categoria import tipoRestauracao as tr
+from entidade.categoria import TipoRestauracao as tr
 
 
 class TelaPeca(Tela):
     def __init__(self, master):
         super().__init__(master)
-        self.master.title("Cadastro de peças")
+        self.master.title("Controlador de peças")
+
+        self.menu_opcao = None
+        # Variáveis para facilitar o cadastro
+        self.dados = None
+        self.custo_aquisicao = None
+        self.entry_descricao = None
+        self.checkbox_vars = None
+
+    def adicionar_dados(self):
+
+        frame_pricipal = tk.Frame(self.master, width=200, height=250, borderwidth=2, relief="solid")
+        frame_pricipal.pack()
+
+        texto_titulo = tk.Label(frame_pricipal, font=14, text="Cadastro de peça")
+        texto_titulo.pack(pady=10, padx=10)
+
+        # Campos de custo
+        self.custo_aquisicao = tk.Entry(frame_pricipal, width=50, font=("Arial", 14))
+        self.custo_aquisicao.pack(pady=10, padx=10)
+
+        # Checkbox de restauração
+        opcoes = tr.tipos.values()
+        tipo_label = tk.Label(frame_pricipal, font=14, text="Ajustes:")
+        tipo_label.pack()
+        self.checkbox_vars = super().gerar_checkbox(opcoes, frame_pricipal)
+
+        # Campo de detalhes
+        self.entry_descricao = tk.Entry(frame_pricipal, width=50, font=("Arial", 14))
+        self.entry_descricao.pack(pady=10, padx=10)
+
+        # Botão para pegar os dados
+        tk.Button(frame_pricipal, text="Registrar", command=self.pegar_dados, padx=5,
+                   pady=5, width=50, height=1, font=10).pack(padx=10, pady=10)
 
     def pegar_dados(self):
-        # Campos de texto
-        entry_nome = super().gerar_input("Título:")
-        # Botão de escolher imagem
-        imagem = super().gerar_botao(texto="Escolher imagem",
-                                     command=super().abrir_imagem)
-        # Imprimir a imagem
-        if imagem:
-            super().exibir_imagem(imagem)
+        ajustes = []
+        for tipo, var in self.checkbox_vars.items():
+            if var.get():
+                ajustes.append(tipo)
 
-        # Para selecionar o Status
-        status_frame = tk.Frame(self.master)
-        status_frame.pack()
-        status_label = tk.Label(status_frame, text="Status")
-        status_label.pack(side=tk.LEFT)
-        opcoes = ["Em restauração", "À venda"]
-        status = super().gerar_radiobutton(opcoes, status_frame)
+        self.dados = {
+            "descrição": self.entry_descricao.get(),
+            "tipos_restauração": ajustes,
+            "imagem": "",
+            "valor_aquisição": self.custo_aquisicao.get()
+        }
 
-        # Criando um dicionário com os resultados
-        dados = {"titulo": entry_nome.get(),
-                 "imagem": imagem,
-                 "status": status.get()}
-
-        # Botão para concluir
-        super().gerar_botao(texto="Continuar",
-                            command=lambda: self.tratar_dados(dados))
-
-    def tratar_dados(self, dados):
-        # Renderizando atributos de acordo com o tipo de Status
-        if dados["status"] == "Em restauração":
-            # Selecionando o tipo de restauração
-            tipo_frame = tk.Frame(self.master)
-            tipo_frame.pack()
-            tipo_label = tk.Label(status_frame, text="Selecione as restaurações\n necessárias:")
-            tipo_label.pack(side=tk.LEFT)
-            # Os tipos foram importados
-            opcoes = tr.tipos
-            tipos_selecionados = super().gerar_checkbox(opcoes, tipo_frame)
-        if dados["status"] == "À venda":
-            preco_entry = super().gerar_input("Preço:")
+        self.master.quit()
 
     def iniciar(self):
-        super().gerar_texto_packed("Cadastro de peça")
-        self.pegar_dados()
+        self.adicionar_dados()
+        self.master.mainloop()
+        return self.dados
+
+    def definir_opcao(self, opcao):
+        self.menu_opcao = opcao
+
+    def menu(self):
+        super().gerar_botao(texto="Registrar", command=lambda : self.definir_opcao(1))
+        super().gerar_botao(texto="Update", command=lambda : self.definir_opcao(2))
+        super().gerar_botao(texto="Mostrar", command=lambda : self.definir_opcao(3))
+        super().gerar_botao(texto="Deletar", command=lambda : self.definir_opcao(4))
+        super().gerar_botao(texto="Retornar", command=lambda : self.definir_opcao(0))
+
+        self.master.mainloop()
 
 
-def main():
-    root = tk.Tk()
-    root.geometry("400x500")
+        return self.menu_opcao
 
-    tela = TelaPeca(root)
-
-    tela.iniciar()
-
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

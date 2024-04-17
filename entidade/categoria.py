@@ -1,4 +1,4 @@
-class tipoRestauracao:
+class TipoRestauracao:
 
     tipos = {
         "LAVAR": 'Lavagem',
@@ -7,7 +7,8 @@ class tipoRestauracao:
         "DETALHES": 'Restauração de detalhes',
         "REMOCAO": 'Remocão de manchas',
         "TINGIMENTO": 'Tingimento',
-        "CUSTOMIZACAO": 'Customização'
+        "CUSTOMIZACAO": 'Customização',
+        "NENHUM": 'Nenhum ajuste'
     }
 
 class Categoria:
