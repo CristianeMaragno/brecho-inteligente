@@ -1,33 +1,36 @@
 from limite.tela_sistema import TelaSistema
 from controle.controlador_usuarios import ControladorUsuarios
+import tkinter as tk
+from limite.tela_usuario import TelaUsuario
 
 class ControladorSistema:
 
-    def __init__(self):
-        self.__controlador_usuarios = ControladorUsuarios(self)
-        self.__tela_sistema = TelaSistema()
+    def __init__(self, root):
+        self.root = root
+        self.__controlador_usuarios = ControladorUsuarios(self.root, self)
+        self.tela_atual = None
 
-    def inicializa_sistema(self):
-        self.abre_tela()
 
-    def abre_tela(self):
-        lista_opcoes_usuario_logado = {1: self.tela_usuarios, 0: self.encerra_sistema}
+    def tela_sistema(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
 
-        lista_opcoes_usuario_deslogado = {}
-
-        while True:
-            if self.__controlador_usuarios.usuario_logado:
-                opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_logado(self.__controlador_usuarios.usuario_logado.nome)
-                funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
-                funcao_escolhida()
-            else:
-                opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_deslogado()
-                funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
-                funcao_escolhida()
+        self.tela_atual = TelaSistema(self.root, self)
+        self.tela_atual.pack()
 
     def tela_usuarios(self):
-        self.__controlador_usuarios.abre_tela_usuario()
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
 
+        self.tela_atual = self.__controlador_usuarios.abre_tela_usuario()
+        self.tela_atual.pack()
+
+    def tela_criar_usuarios(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = self.__controlador_usuarios.abre_tela_criar_usuario()
+        self.tela_atual.pack()
 
     @property
     def controlador_usuarios(self):
