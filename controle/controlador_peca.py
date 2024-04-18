@@ -57,11 +57,11 @@ class ControladorPeca:
 
 def main():
     root = tk.Tk()
-    root.geometry("770x770")
+    root.geometry("550x550")
 
     controlador = ControladorPeca(root)
 
-    controlador.criar_peca()
+    controlador.menu_peca()
 
     root.mainloop()
 

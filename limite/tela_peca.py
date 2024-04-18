@@ -7,6 +7,7 @@ class TelaPeca(Tela):
     def __init__(self, master):
         super().__init__(master)
         self.master.title("Controlador de peças")
+        self.frame = None
 
         self.menu_opcao = None
         # Variáveis para facilitar o cadastro
@@ -61,18 +62,28 @@ class TelaPeca(Tela):
         self.master.mainloop()
         return self.dados
 
-    def definir_opcao(self, opcao):
-        self.menu_opcao = opcao
-
     def menu(self):
-        super().gerar_botao(texto="Registrar", command=lambda : self.definir_opcao(1))
-        super().gerar_botao(texto="Update", command=lambda : self.definir_opcao(2))
-        super().gerar_botao(texto="Mostrar", command=lambda : self.definir_opcao(3))
-        super().gerar_botao(texto="Deletar", command=lambda : self.definir_opcao(4))
-        super().gerar_botao(texto="Retornar", command=lambda : self.definir_opcao(0))
-
+        self.menu_opcoes()
         self.master.mainloop()
-
-
         return self.menu_opcao
+
+    def definir_opcao(self, op):
+        self.menu_opcao = op
+        self.frame.pack_forget()
+        self.master.quit()
+
+    def menu_opcoes(self):
+
+        self.frame = tk.Frame(self.master, width=200, height=250, borderwidth=2, relief="solid")
+        self.frame.pack()
+        tk.Button(self.frame, text="Registrar", command=lambda : self.definir_opcao(1)).pack()
+        tk.Button(self.frame, text="Update", command=lambda: self.definir_opcao(2)).pack()
+        tk.Button(self.frame, text="Deletar", command=lambda: self.definir_opcao(3)).pack()
+        tk.Button(self.frame, text="Mostrar", command=lambda: self.definir_opcao(4)).pack()
+        tk.Button(self.frame, text="Retornar", command=lambda: self.definir_opcao(0)).pack()
+
+
+
+
+
 
