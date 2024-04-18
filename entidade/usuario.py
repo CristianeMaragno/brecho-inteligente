@@ -6,6 +6,7 @@ class Usuario():
         self.__senha = senha
         self.__papel = papel
 
+    @property
     def identificador(self):
         return self.__id
 
