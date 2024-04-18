@@ -1,15 +1,18 @@
 import tkinter as tk
 from limite.tela_peca import MenuPeca, RegistrarPeca, ApagarPeca, UpdatePeca, MostrarPeca
 from entidade.peca import Peca
-from entidade.statusRestauracao import StatusRestauracao
+from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from persistencia.peca_dao import PecaDAO as pdao
+from persistencia.restauracao_dao import PecaDAO as strdao
+
 import hashlib
 import random
-import string
+
 
 class ControladorPeca:
     def __init__(self, root):
         self.pdao = pdao()
+        self.strdao = strdao()
         self.root = root
         self.tela_atual = None
 
@@ -22,8 +25,11 @@ class ControladorPeca:
         return hex_hash[:length]
 
     def get_peca(self, codigo: str):
+
         if codigo:
             resultado = self.pdao.get_by_id(codigo)
+            if self.strdao.get_by_id(resultado.status):
+                resultado.status(status)
             if resultado:
                 return resultado
             else:
@@ -57,7 +63,8 @@ class ControladorPeca:
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = MostrarPeca(self.root, self, self.pdao.get_all())
+        pecas_com_status = self.mostrar(self.pdao.get_all())
+        self.tela_atual = MostrarPeca(self.root, self, pecas_com_status)
         self.tela_atual.pack()
 
     def tela_apagar(self):
@@ -73,6 +80,7 @@ class ControladorPeca:
             id = self.generate_short_hash()
 
             status = StatusRestauracao(dados["tipos_restauração"])
+            self.strdao.add(status)
             nova_peca = Peca(id, dados["descrição"], status, float(dados['custo_aquisição']), dados['imagem'])
 
             print("Peça criada com sucesso!")
@@ -85,25 +93,27 @@ class ControladorPeca:
     def update(self, dados):
         status = StatusRestauracao(dados["tipos_restauração"])
         update_peca = Peca(dados['id'], dados["descrição"], status, float(dados['custo_aquisição']), dados['imagem'])
+
+        resultado = self.pdao.get_by_id(dados['id'])
+        if self.strdao.get_by_id(resultado.status):
+            self.strdao.remove(resultado.status)
+        self.strdao.remove(resultado.status)
+
         self.pdao.update(update_peca.id, update_peca)
         print('Update feito com sucesso!')
 
-    def mostrar(self, peca: Peca):
-        pass
+    def mostrar(self, lista_dao):
+        for peca in lista_dao:
+            status = self.strdao.get_by_id(peca.status)
+            if status:
+                peca.status(status)
+                print(peca.status.__str__())
+            return lista_dao
 
     def apagar(self, codigo):
-        self.pdao.remove(codigo)
-        print('Peça apagada com sucesso!')
-
-def main():
-    root = tk.Tk()
-    root.geometry("500x500")
-
-    controller = ControladorPeca(root)
-    controller.tela_menu()
-
-    root.mainloop()
-
-if __name__ == "__main__":
-
-    main()
+        if codigo:
+            resultado = self.pdao.get_by_id(codigo)
+            if self.strdao.get_by_id(resultado.status):
+                self.strdao.remove(resultado.status)
+            self.pdao.remove(codigo)
+            print('Peça apagada com sucesso!')

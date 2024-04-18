@@ -20,7 +20,7 @@ class Status(ABC):
         self.__id = id
 
     def gen_id(self, tamanho=16):
-        caracteres = string.ascii_letters + string.digits + string.punctuation
+        caracteres = string.ascii_letters + string.digits
         chave = ''.join(secrets.choice(caracteres) for _ in range(tamanho))
         return chave
 

@@ -52,7 +52,6 @@ class RegistrarPeca(tk.Frame):
         self.custo_aquisicao = tk.Entry(self.frame)
         self.custo_aquisicao.pack(pady=10, padx=10)
 
-        # Checkbox de restauração
         opcoes = tr.tipos.values()
         tipo_label = tk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
@@ -63,12 +62,11 @@ class RegistrarPeca(tk.Frame):
         checkbox_frame = tk.Frame(self.frame)
         checkbox_frame.pack(padx=10, pady=10)
 
-        # Criando checkboxes
+        # Criando listbox
+        self.listbox = tk.Listbox(checkbox_frame, selectmode=tk.MULTIPLE, width=20, height=len(opcoes))
         for opcao in opcoes:
-            var = tk.BooleanVar()
-            self.checkbox_vars[opcao] = var
-            checkbox = tk.Checkbutton(checkbox_frame, text=opcao, variable=var)
-            checkbox.pack(padx=10, pady=5)
+            self.listbox.insert(tk.END, opcao)
+        self.listbox.pack(padx=10, pady=10)
 
         # Campo de detalhes
         self.label_desc = tk.Label(self.frame, text="Detalhes:")
@@ -81,12 +79,10 @@ class RegistrarPeca(tk.Frame):
         tk.Button(self.frame, text="Registrar", command=self.retornar).pack(padx=10, pady=10)
 
     def retornar(self):
-        ajustes = []
-        if self.checkbox_vars:
-            for tipo, var in self.checkbox_vars.items():
-                if var.get():
-                    ajustes.append(tipo)
-        else:
+
+        selecionados = self.listbox.curselection()
+        ajustes = [self.listbox.get(idx) for idx in selecionados]
+        if not ajustes:
             ajustes.append(tr.tipos["NENHUM"])
 
         dados = {
@@ -159,18 +155,15 @@ class UpdatePeca(tk.Frame):
         tipo_label = tk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
 
-        self.checkbox_vars = {}
-
         # Frame para os checkboxes
         checkbox_frame = tk.Frame(self.frame)
         checkbox_frame.pack(padx=10, pady=10)
 
-        # Criando checkboxes
+        # Criando listbox
+        self.listbox = tk.Listbox(checkbox_frame, selectmode=tk.MULTIPLE, width=20, height=len(opcoes))
         for opcao in opcoes:
-            var = tk.BooleanVar()
-            self.checkbox_vars[opcao] = var
-            checkbox = tk.Checkbutton(checkbox_frame, text=opcao, variable=var)
-            checkbox.pack(padx=10, pady=5)
+            self.listbox.insert(tk.END, opcao)
+        self.listbox.pack(padx=10, pady=10)
 
         # Campo de detalhes
         self.label_desc = tk.Label(self.frame, text="Detalhes:")
@@ -184,12 +177,9 @@ class UpdatePeca(tk.Frame):
 
 
     def retornar(self):
-        ajustes = []
-        if self.checkbox_vars:
-            for tipo, var in self.checkbox_vars.items():
-                if var.get():
-                    ajustes.append(tipo)
-        else:
+        selecionados = self.listbox.curselection()
+        ajustes = [self.listbox.get(idx) for idx in selecionados]
+        if not ajustes:
             ajustes.append(tr.tipos["NENHUM"])
 
         dados = {
@@ -218,7 +208,8 @@ class MostrarPeca(tk.Frame):
 
         self.listbox = tk.Listbox(self.frame, width=50)
         for peca in self.pecas:
-            self.listbox.insert(tk.END, peca)
+            self.listbox.insert(tk.END, f'ID: {peca.id}  Descrição: {peca.descricao}'
+                                        f'  Status: {peca.status.__str__()}')
         self.listbox.pack()
 
         self.button = tk.Button(

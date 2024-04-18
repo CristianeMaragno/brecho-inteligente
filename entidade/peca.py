@@ -35,3 +35,7 @@ class Peca:
     @property
     def preco(self):
         return self.__preco
+
+    @status.setter
+    def status(self, status):
+        self.__status = status

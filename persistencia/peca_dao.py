@@ -18,7 +18,15 @@ class PecaDAO(DAO):
         super().execute_query(query)
 
     def get_all(self):
-        return super().fetch_data('pecas')
+        rows = super().fetch_data('pecas')
+
+        pecas = []
+
+        for row in rows:
+            peca = Peca(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            pecas.append(peca)
+
+        return pecas
 
     def get_by_id(self, codigo: str):
         query = f"SELECT * FROM pecas WHERE id = '{codigo}'"
