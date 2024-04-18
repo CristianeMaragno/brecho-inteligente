@@ -3,87 +3,146 @@ from limite.tela import Tela
 from entidade.categoria import TipoRestauracao as tr
 
 
-class TelaPeca(Tela):
-    def __init__(self, master):
+class MenuPeca(tk.Frame):
+    def __init__(self, master, controller):
         super().__init__(master)
-        self.master.title("Controlador de peças")
-        self.frame = None
+        self.controller = controller
+        self.abrir_menu()
 
-        self.menu_opcao = None
-        # Variáveis para facilitar o cadastro
-        self.dados = None
-        self.custo_aquisicao = None
-        self.entry_descricao = None
-        self.checkbox_vars = None
+    def abrir_menu(self):
+        self.label = tk.Label(self, text="Menu")
+        self.label.pack()
 
-    def adicionar_dados(self):
+        self.button1 = tk.Button(
+            self, text="Registrar", command=self.controller.tela_registrar
+        )
+        self.button1.pack()
 
-        frame_pricipal = tk.Frame(self.master, width=200, height=250, borderwidth=2, relief="solid")
-        frame_pricipal.pack()
+        self.button2 = tk.Button(
+            self, text="Update", command=self.controller.tela_update
+        )
+        self.button2.pack()
 
-        texto_titulo = tk.Label(frame_pricipal, font=14, text="Cadastro de peça")
-        texto_titulo.pack(pady=10, padx=10)
+        self.button2 = tk.Button(
+            self, text="Apagar", command=self.controller.tela_apagar
+        )
+        self.button2.pack()
 
-        # Campos de custo
-        self.custo_aquisicao = tk.Entry(frame_pricipal, width=50, font=("Arial", 14))
+        self.button2 = tk.Button(
+            self, text="Mostrar", command=self.controller.tela_mostrar
+        )
+        self.button2.pack()
+
+class RegistrarPeca(tk.Frame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+        self.registrar()
+
+    def registrar(self):
+        self.frame = tk.Frame(self.master, width=100, height=150, borderwidth=2, relief="solid")
+        self.frame.pack(pady=50, padx=20)
+
+        self.texto_titulo = tk.Label(self.frame, font=11, text="Cadastro de peça")
+        self.texto_titulo.pack(pady=10, padx=10)
+
+        # Entry de custo de aquisição
+        self.label_custo = tk.Label(self.frame, font=8, text="Custo de aquisição:")
+        self.label_custo.pack(pady=10, padx=10)
+
+        self.custo_aquisicao = tk.Entry(self.frame, width=30, font=("Arial", 8))
         self.custo_aquisicao.pack(pady=10, padx=10)
 
         # Checkbox de restauração
         opcoes = tr.tipos.values()
-        tipo_label = tk.Label(frame_pricipal, font=14, text="Ajustes:")
+        tipo_label = tk.Label(self.frame, font=14, text="Ajustes:")
         tipo_label.pack()
-        self.checkbox_vars = super().gerar_checkbox(opcoes, frame_pricipal)
+
+        self.checkbox_vars = {}
+
+        # Frame para os checkboxes
+        checkbox_frame = tk.Frame(self.frame)
+        checkbox_frame.pack(padx=10, pady=10)
+
+        # Criando checkboxes
+        for opcao in opcoes:
+            var = tk.BooleanVar()
+            self.checkbox_vars[opcao] = var
+            checkbox = tk.Checkbutton(checkbox_frame, text=opcao, variable=var)
+            checkbox.pack(padx=10, pady=5)
 
         # Campo de detalhes
-        self.entry_descricao = tk.Entry(frame_pricipal, width=50, font=("Arial", 14))
+        self.label_desc = tk.Label(self.frame, font=8, text="Detalhes:")
+        self.label_desc.pack(pady=10, padx=10)
+
+        self.entry_descricao = tk.Entry(self.frame, width=30, font=("Arial", 8))
         self.entry_descricao.pack(pady=10, padx=10)
 
         # Botão para pegar os dados
-        tk.Button(frame_pricipal, text="Registrar", command=self.pegar_dados, padx=5,
-                   pady=5, width=50, height=1, font=10).pack(padx=10, pady=10)
+        tk.Button(self.frame, text="Registrar", command=self.retornar, padx=5,
+                  pady=5, width=50, height=1, font=10).pack(padx=10, pady=10)
 
-    def pegar_dados(self):
+    def retornar(self):
+
         ajustes = []
-        for tipo, var in self.checkbox_vars.items():
-            if var.get():
-                ajustes.append(tipo)
+        if self.checkbox_vars:
+            for tipo, var in self.checkbox_vars.items():
+                if var.get():
+                    ajustes.append(tipo)
+        else:
+            ajustes.append(tr.tipos["NENHUM"])
 
-        self.dados = {
+        dados = {
             "descrição": self.entry_descricao.get(),
             "tipos_restauração": ajustes,
             "imagem": "",
-            "valor_aquisição": self.custo_aquisicao.get()
+            "custo_aquisição": self.custo_aquisicao.get()
         }
-
-        self.master.quit()
-
-    def iniciar(self):
-        self.adicionar_dados()
-        self.master.mainloop()
-        return self.dados
-
-    def menu(self):
-        self.menu_opcoes()
-        self.master.mainloop()
-        return self.menu_opcao
-
-    def definir_opcao(self, op):
-        self.menu_opcao = op
         self.frame.pack_forget()
-        self.master.quit()
+        self.controller.registrar(dados)
+        self.controller.tela_menu()
 
-    def menu_opcoes(self):
+class UpdatePeca(tk.Frame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+        self.update()
 
-        self.frame = tk.Frame(self.master, width=200, height=250, borderwidth=2, relief="solid")
-        self.frame.pack()
-        tk.Button(self.frame, text="Registrar", command=lambda : self.definir_opcao(1)).pack()
-        tk.Button(self.frame, text="Update", command=lambda: self.definir_opcao(2)).pack()
-        tk.Button(self.frame, text="Deletar", command=lambda: self.definir_opcao(3)).pack()
-        tk.Button(self.frame, text="Mostrar", command=lambda: self.definir_opcao(4)).pack()
-        tk.Button(self.frame, text="Retornar", command=lambda: self.definir_opcao(0)).pack()
+    def update(self):
+        self.label = tk.Label(self, text="Update")
+        self.label.pack()
 
+        self.button = tk.Button(
+            self, text="Retornar ao Menu", command=self.controller.tela_menu
+        )
+        self.button.pack()
 
+class MostrarPeca(tk.Frame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+        self.mostrar()
 
+    def mostrar(self):
+        self.label = tk.Label(self, text="Mostrar")
+        self.label.pack()
 
+        self.button = tk.Button(
+            self, text="Retornar ao Menu", command=self.controller.tela_menu
+        )
+        self.button.pack()
 
+class ApagarPeca(tk.Frame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+        self.apagar()
 
+    def apagar(self):
+        self.label = tk.Label(self, text="Apagar")
+        self.label.pack()
+
+        self.button = tk.Button(
+            self, text="Retornar ao Menu", command=self.controller.tela_menu
+        )
+        self.button.pack()

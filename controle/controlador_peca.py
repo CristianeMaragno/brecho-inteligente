@@ -1,5 +1,5 @@
 import tkinter as tk
-from limite.tela_peca import TelaPeca
+from limite.tela_peca import MenuPeca, RegistrarPeca, ApagarPeca, UpdatePeca, MostrarPeca
 from entidade.peca import Peca
 from entidade.statusRestauracao import StatusRestauracao
 from entidade.statusAVenda import StatusAVenda
@@ -9,8 +9,10 @@ import string
 
 class ControladorPeca:
     def __init__(self, root):
-        self.tela = TelaPeca(root)
+        self.root = root
+        self.tela_atual = None
 
+    # Métodos auxiliares
     def generate_short_hash(self, length=8):
         random.seed()
         seed = random.randint(0, 1000000)
@@ -18,19 +20,44 @@ class ControladorPeca:
         hex_hash = hash_object.hexdigest()
         return hex_hash[:length]
 
-    def menu_peca(self):
-        lista_opcoes = {1: self.criar_peca, 2: self.update_peca,
-                        3: self.mostrar_peca, 4: self.deletar_peca}
+    # Métodos de navegação
+    def tela_menu(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
 
-        while True:
-            opcao_escolhida = self.tela.menu()
-            funcao_escolhida = lista_opcoes[opcao_escolhida]
-            funcao_escolhida()
+        self.tela_atual = MenuPeca(self.root, self)
+        self.tela_atual.pack()
 
-    def criar_peca(self):
+    def tela_registrar(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
 
-        dados = self.tela.iniciar()
+        self.tela_atual = RegistrarPeca(self.root, self)
+        self.tela_atual.pack()
 
+    def tela_update(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = UpdatePeca(self.root, self)
+        self.tela_atual.pack()
+
+    def tela_mostrar(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = MostrarPeca(self.root, self)
+        self.tela_atual.pack()
+
+    def tela_apagar(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = ApagarPeca(self.root, self)
+        self.tela_atual.pack()
+
+    # Métodos de tratamento de dados
+    def registrar(self, dados):
         if dados:
             id = self.generate_short_hash()
 
@@ -45,23 +72,22 @@ class ControladorPeca:
         else:
             print('Erro na criação da peça!')
 
-    def update_peca(self, peca: Peca):
+    def update(self, peca: Peca):
         pass
 
-    def mostrar_peca(self, peca: Peca):
+    def mostrar(self, peca: Peca):
         pass
 
-    def deletar_peca(self, peca: Peca):
+    def apagar(self, peca: Peca):
         pass
 
 
 def main():
     root = tk.Tk()
-    root.geometry("550x550")
+    root.geometry("500x500")
 
-    controlador = ControladorPeca(root)
-
-    controlador.menu_peca()
+    controller = ControladorPeca(root)
+    controller.tela_menu()
 
     root.mainloop()
 
