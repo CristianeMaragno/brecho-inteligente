@@ -35,3 +35,7 @@ class DAO(ABC):
     def execute_query(self, query):
         self.cursor.execute(query)
         return self.cursor.fetchall()
+
+    def execute_query_one_value(self, query):
+        self.cursor.execute(query)
+        return self.cursor.fetchone()
