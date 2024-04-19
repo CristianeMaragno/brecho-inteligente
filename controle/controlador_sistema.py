@@ -1,7 +1,5 @@
 from limite.tela_sistema import TelaSistema
 from controle.controlador_usuarios import ControladorUsuarios
-import tkinter as tk
-from limite.tela_usuario import TelaUsuario
 
 class ControladorSistema:
 

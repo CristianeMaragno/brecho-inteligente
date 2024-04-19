@@ -21,12 +21,12 @@ class TelaUsuario(tk.Frame):
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.user_listbox.config(yscrollcommand=self.scrollbar.set)
 
-        # Delete Button
-        self.delete_button = ttk.Button(self, text="Deletar Usuario", command=self.deletar_usuario)
+        # Deletar Button
+        self.delete_button = ttk.Button(self, text="Deletar Usuário", command=self.deletar_usuario)
         self.delete_button.pack(pady=5)
 
-        # Edit Button
-        self.edit_button = ttk.Button(self, text="Editar Usuario", command=self.editar_usuario)
+        # Editar Button
+        self.edit_button = ttk.Button(self, text="Editar Usuário", command=self.editar_usuario)
         self.edit_button.pack(pady=5)
 
         # Voltar Button
@@ -34,20 +34,20 @@ class TelaUsuario(tk.Frame):
         self.go_back_button.pack(pady=5)
 
     def deletar_usuario(self):
-        selected_index = self.user_listbox.curselection()
-        if selected_index:
-            selected_user = self.user_listbox.get(selected_index[0])
-            parts = selected_user.split(" ")
-            id_part = parts[0].strip()
-            id = int(id_part)
+        index = self.user_listbox.curselection()
+        if index:
+            usuario_selecionado = self.user_listbox.get(index[0])
+            partes = usuario_selecionado.split(" ")
+            id_parte = partes[0].strip()
+            id = int(id_parte)
             self.controlador.deletar_usuario(id)
-            self.user_listbox.delete(selected_index[0])
+            self.user_listbox.delete(index[0])
 
     def editar_usuario(self):
-        selected_index = self.user_listbox.curselection()
-        if selected_index:
-            selected_user = self.user_listbox.get(selected_index[0])
-            parts = selected_user.split(" ")
-            id_part = parts[0].strip()
-            id = int(id_part)
+        index = self.user_listbox.curselection()
+        if index:
+            usuario_selecionado = self.user_listbox.get(index[0])
+            partes = usuario_selecionado.split(" ")
+            id_parte = partes[0].strip()
+            id = int(id_parte)
             self.controlador.editar_usuario(id)

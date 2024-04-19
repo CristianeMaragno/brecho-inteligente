@@ -2,8 +2,6 @@ from limite.tela_usuario import TelaUsuario
 from limite.tela_criar_usuario import TelaCriarUsuario
 from entidade.usuario import Usuario
 from persistencia.usuario_dao import UsuarioDAO
-import tkinter as tk
-
 
 class ControladorUsuarios:
 
@@ -20,6 +18,7 @@ class ControladorUsuarios:
         return TelaCriarUsuario(self.master, self, self.usuario)
 
     def voltar(self):
+        self.usuario = None
         self.controlador.tela_sistema()
 
     def criar_usuario(self, id, nome, email, senha, papel, editar):
@@ -33,12 +32,12 @@ class ControladorUsuarios:
         UsuarioDAO().remove(id)
 
     def editar_usuario(self, id):
-        usuario = UsuarioDAO().get_by_id(id)
+        usuario = UsuarioDAO().pegar_por_id(id)
         if(usuario):
             self.usuario = usuario
             self.controlador.tela_criar_usuarios()
 
     def pegar_todos(self):
-        usuarios = UsuarioDAO().get_all()
+        usuarios = UsuarioDAO().pegar_todos()
         return usuarios
 

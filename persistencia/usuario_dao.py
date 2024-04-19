@@ -27,7 +27,7 @@ class UsuarioDAO(DAO):
     def remove(self, id: int):
         super().delete('users', 'id', id)
 
-    def get_all(self):
+    def pegar_todos(self):
         rows = super().fetch_data('users')
         response = []
         for row in rows:
@@ -36,13 +36,13 @@ class UsuarioDAO(DAO):
 
         return response
 
-    def get_by_id(self, codigo):
+    def pegar_por_id(self, codigo):
         query = "SELECT * FROM users WHERE id = %s" % (codigo)
-        usuario = self.execute(query)
+        usuario = self.executar(query)
         if usuario:
             return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
         else:
             return None
 
-    def execute(self, custom_query):
+    def executar(self, custom_query):
         return super().execute_query_one_value(custom_query)
