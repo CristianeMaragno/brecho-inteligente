@@ -1,4 +1,7 @@
 import tkinter as tk
+from tkinter import messagebox
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from entidade.categoria import TipoRestauracao as tr
 
 
@@ -36,6 +39,7 @@ class RegistrarPeca(tk.Frame):
     def __init__(self, master, controller):
         super().__init__(master)
         self.controller = controller
+        self.frame = None
         self.registrar()
 
     def registrar(self):
@@ -76,12 +80,20 @@ class RegistrarPeca(tk.Frame):
         self.entry_descricao.pack(pady=10, padx=10)
 
         # Botão para pegar os dados
-        tk.Button(self.frame, text="Registrar", command=self.retornar).pack(padx=10, pady=10)
+        tk.Button(self.frame, text="Registrar", command=self.input_tests).pack(padx=10, pady=10)
+
+    def input_tests(self):
+        try:
+            custo_aquisicao = float(self.custo_aquisicao.get())
+            if custo_aquisicao:
+                self.retornar()
+        except ValueError as e:
+            messagebox.showinfo("Erro", "Por favor informe um valor válido de custo de aquisição.")
 
     def retornar(self):
-
         selecionados = self.listbox.curselection()
         ajustes = [self.listbox.get(idx) for idx in selecionados]
+
         if not ajustes:
             ajustes.append(tr.tipos["NENHUM"])
 
