@@ -32,6 +32,17 @@ class DAO(ABC):
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
+    def delete(self, table_name, coluna, data):
+        query = f"DELETE FROM {table_name} WHERE {coluna} = ?"
+        self.cursor.execute(query, (data,))
+        self.conn.commit()
+
+    def update(self, table_name, set_values, condition):
+        set_clause = ', '.join([f"{column} = ?" for column in set_values.keys()])
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+        self.cursor.execute(query, tuple(set_values.values()))
+        self.conn.commit()
+
     def execute_query(self, query):
         self.cursor.execute(query)
         return self.cursor.fetchall()
