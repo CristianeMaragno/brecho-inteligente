@@ -40,7 +40,7 @@ class RegistrarPeca(tk.Frame):
 
     def registrar(self):
         self.frame = tk.Frame(self, borderwidth=2, relief="solid")
-        self.frame.pack(pady=50, padx=20)
+        self.frame.pack(pady=10, padx=20)
 
         self.texto_titulo = tk.Label(self.frame, text="Cadastro de peça")
         self.texto_titulo.pack(pady=10, padx=10)
@@ -137,8 +137,8 @@ class UpdatePeca(tk.Frame):
             self.get_id()
 
     def update(self):
-        self.frame = tk.Frame(self.master, borderwidth=2, relief="solid")
-        self.frame.pack(pady=50, padx=20)
+        self.frame = tk.Frame(self, borderwidth=2, relief="solid")
+        self.frame.pack(pady=10, padx=20)
 
         self.texto_titulo = tk.Label(self.frame, text="Update de peça")
         self.texto_titulo.pack(pady=10, padx=10)
@@ -159,18 +159,18 @@ class UpdatePeca(tk.Frame):
         checkbox_frame = tk.Frame(self.frame)
         checkbox_frame.pack(padx=10, pady=10)
 
-        # Criando listbox
-        self.listbox = tk.Listbox(checkbox_frame, selectmode=tk.MULTIPLE, width=20, height=len(opcoes))
-        for opcao in opcoes:
-            self.listbox.insert(tk.END, opcao)
-        self.listbox.pack(padx=10, pady=10)
-
         # Campo de detalhes
         self.label_desc = tk.Label(self.frame, text="Detalhes:")
         self.label_desc.pack(pady=10, padx=10)
 
         self.entry_descricao = tk.Entry(self.frame, font=("Arial", 8))
         self.entry_descricao.pack(pady=10, padx=10)
+
+        # Criando listbox
+        self.listbox = tk.Listbox(checkbox_frame, selectmode=tk.MULTIPLE, width=20, height=len(opcoes))
+        for opcao in opcoes:
+            self.listbox.insert(tk.END, opcao)
+        self.listbox.pack(padx=10, pady=10)
 
         # Botão para pegar os dados
         tk.Button(self.frame, text="Update", command=self.retornar).pack(padx=10, pady=10)

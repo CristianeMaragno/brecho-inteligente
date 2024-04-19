@@ -16,9 +16,13 @@ class StatusRestauracao(Status):
     def custo_total(self):
         return self.__custo_total
 
-    @custo_total.setter
-    def custo_total(self, value):
-        self.__custo_total = value
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, id):
+        self.__id = id
 
     @custo_total.setter
     def custo_total(self, custo_total):
