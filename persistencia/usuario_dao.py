@@ -6,16 +6,26 @@ class UsuarioDAO(DAO):
     def __init__(self):
         super().__init__()
         super().connect()
-        super().create_table('users', {'id': 'INTEGER PRIMARY KEY', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'papel': 'INTEGER'})
+        super().create_table('users', {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'papel': 'INTEGER'})
     def add(self, usuario: Usuario):
         data = [
-            (usuario.identificador, usuario.nome, usuario.email, usuario.senha, usuario.papel),
+            (usuario.nome, usuario.email, usuario.senha, usuario.papel),
         ]
 
-        super().insert_data('users', data)
+        super().insert_data('users (nome, email, senha, papel)', data)
 
-    def remove(self, codigo: int):
-        return 0
+    def update(self, usuario: Usuario):
+        data = {
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "senha": usuario.senha,
+            "papel": usuario.papel
+        }
+        condition = "id = " + str(usuario.identificador)
+        super().update('users', data, condition)
+
+    def remove(self, id: int):
+        super().delete('users', 'id', id)
 
     def get_all(self):
         rows = super().fetch_data('users')
@@ -33,9 +43,6 @@ class UsuarioDAO(DAO):
             return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
         else:
             return None
-
-    def update(self, codigo, usuario: Usuario):
-        return 0
 
     def execute(self, custom_query):
         return super().execute_query_one_value(custom_query)
