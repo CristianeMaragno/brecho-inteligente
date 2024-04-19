@@ -10,27 +10,35 @@ class ControladorUsuarios:
     def __init__(self, master, controlador):
         self.master = master
         self.controlador = controlador
-        self.users = ["User 1", "User 2", "User 3", "User 4"]
-        #self.pegar_todos()
+        self.usuario = None
 
     def abre_tela_usuario(self):
-        return TelaUsuario(self.master, self, self.users)
+        usuarios = self.pegar_todos()
+        return TelaUsuario(self.master, self, usuarios)
 
     def abre_tela_criar_usuario(self):
-        return TelaCriarUsuario(self.master, self)
+        return TelaCriarUsuario(self.master, self, self.usuario)
 
     def voltar(self):
         self.controlador.tela_sistema()
 
-    def criar_usuario(self):
-        usuario = Usuario(2, "Teste2", "teste@gmail.com", "teste", 1)
-        UsuarioDAO().add(usuario)
-        print("save")
+    def criar_usuario(self, id, nome, email, senha, papel, editar):
+        usuario = Usuario(id, nome, email, senha, papel)
+        if(editar):
+            UsuarioDAO().update(usuario)
+        else:
+            UsuarioDAO().add(usuario)
 
-    def deletar_usuario(self):
-        print("delete")
+    def deletar_usuario(self, id):
+        UsuarioDAO().remove(id)
+
+    def editar_usuario(self, id):
+        usuario = UsuarioDAO().get_by_id(id)
+        if(usuario):
+            self.usuario = usuario
+            self.controlador.tela_criar_usuarios()
 
     def pegar_todos(self):
         usuarios = UsuarioDAO().get_all()
-        print(usuarios)
+        return usuarios
 
