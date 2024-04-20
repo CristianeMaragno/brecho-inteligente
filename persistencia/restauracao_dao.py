@@ -19,7 +19,7 @@ class RestauracaoDAO(DAO):
             print(f"O id '{st.id}' já existe na tabela status_restauracao. A inserção foi ignorada.")
 
     def remove(self, codigo: str):
-        query = f"DELETE FROM pecas WHERE id = '{codigo}'"
+        query = f"DELETE FROM status_restauracao WHERE id = '{codigo}'"
         super().execute_query(query)
 
     def get_all(self):

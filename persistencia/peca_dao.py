@@ -22,7 +22,7 @@ class PecaDAO(DAO):
             peca = self.get_by_id(codigo)
             if peca and peca.status:
                 self.strdao.remove(peca.status.id)
-            super().execute_query(f"DELETE FROM pecas WHERE id = '{codigo}'")
+            self.execute(f"DELETE FROM pecas WHERE id = '{codigo}'")
 
     def get_all(self):
         rows = super().fetch_data('pecas')
@@ -33,7 +33,7 @@ class PecaDAO(DAO):
         return pecas
 
     def get_by_id(self, codigo: str):
-        result = self.execute_query(f"SELECT * FROM pecas WHERE id = '{codigo}'")
+        result = self.execute(f"SELECT * FROM pecas WHERE id = '{codigo}'")
         if result:
             peca_data = result[0]
             status = self.strdao.get_by_id(peca_data[2])
@@ -45,10 +45,11 @@ class PecaDAO(DAO):
             old_peca = self.get_by_id(codigo)
             if old_peca and old_peca.status:
                 self.strdao.remove(old_peca.status.id)
-            query = f"UPDATE pecas SET descricao = '{peca.descricao}', imagem = '{peca.imagem}', " \
-                    f"status_id = '{peca.status.id}', titulo = '{peca.titulo}', preco = {peca.preco} " \
-                    f"WHERE id = '{codigo}'"
-            super().execute_query(query)
+            query = (f"UPDATE pecas SET descricao = '{peca.descricao}', imagem = '{peca.imagem}', " \
+                     f"status_id = '{peca.status.id}', custo_aquisicao = {peca.custo_aquisicao}, " \
+                     f"titulo = '{peca.titulo}', preco = '{peca.preco}' " \
+                     f"WHERE id = '{codigo}'")
+            self.execute(query)
 
     def execute(self, custom_query):
         return super().execute_query(custom_query)

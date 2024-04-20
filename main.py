@@ -1,10 +1,9 @@
 from controle.controlador_peca import ControladorPeca
-import tkinter as tk
+import ttkbootstrap as ttk
 
 
 def main():
-    root = tk.Tk()
-    root.geometry("500x500")
+    root = ttk.Window(themename="lumen")
 
     controller = ControladorPeca(root)
     controller.tela_menu()
