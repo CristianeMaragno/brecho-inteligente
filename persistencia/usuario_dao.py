@@ -46,3 +46,17 @@ class UsuarioDAO(DAO):
 
     def executar(self, custom_query):
         return super().execute_query_one_value(custom_query)
+    
+    def fazer_login(self, email, senha):
+        # Conectar ao banco de dados SQLite
+        self.connect()
+        cursor = self.conn.cursor()
+
+        # Consulta SQL para verificar se o email e senha correspondem a um usuário
+        cursor.execute("SELECT * FROM users WHERE email=? AND senha=?", (email, senha))
+        usuario = cursor.fetchone()
+
+        self.disconnect()
+
+        # Se um usuário foi encontrado, retorna True, caso contrário, retorna False
+        return usuario is not None

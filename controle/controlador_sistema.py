@@ -1,4 +1,5 @@
 from limite.tela_sistema import TelaSistema
+from limite.tela_catalogo import TelaCatalogo
 from controle.controlador_usuarios import ControladorUsuarios
 
 class ControladorSistema:
@@ -28,6 +29,21 @@ class ControladorSistema:
             self.tela_atual.pack_forget()
 
         self.tela_atual = self.__controlador_usuarios.abre_tela_criar_usuario()
+        self.tela_atual.pack()
+
+    def tela_login(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+        
+        self.tela_atual = self.__controlador_usuarios.abre_tela_login()
+        self.tela_atual.pack()
+    
+    def tela_usuario_deslogado(self):
+        print("aaaaaa")
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+        
+        self.tela_atual = self.__controlador_usuarios.abre_tela_catalogo()
         self.tela_atual.pack()
 
     @property
