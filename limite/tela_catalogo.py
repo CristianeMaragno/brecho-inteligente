@@ -12,5 +12,5 @@ class TelaCatalogo(tk.Frame):
         titulo_label = tk.Label(self, text="[Futuro catalogo]", font=("Helvetica", 14, "bold"))
         titulo_label.grid(row=0, columnspan=2, pady=10)
         
-        self.login_button = tk.Button(self, text="Login", command=self.controlador.controlador.tela_login )
+        self.login_button = tk.Button(self, text="Login", command=self.controlador.tela_login )
         self.login_button.grid(row=1, columnspan=2, pady=10)

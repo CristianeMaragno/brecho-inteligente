@@ -39,11 +39,10 @@ class ControladorSistema:
         self.tela_atual.pack()
     
     def tela_usuario_deslogado(self):
-        print("aaaaaa")
         if self.tela_atual:
             self.tela_atual.pack_forget()
         
-        self.tela_atual = self.__controlador_usuarios.abre_tela_catalogo()
+        self.tela_atual = TelaCatalogo(self.root, self)
         self.tela_atual.pack()
 
     @property
