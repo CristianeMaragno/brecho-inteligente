@@ -19,8 +19,8 @@ class ControladorUsuarios:
     def abre_tela_criar_usuario(self):
         return TelaCriarUsuario(self.master, self, self.usuario)
 
-    def abre_tela_login(self):
-        return TelaLogin(self.master, self)
+    def abre_tela_login(self, erro=None):
+        return TelaLogin(self.master, self, erro)
 
     def voltar(self):
         self.usuario = None
@@ -49,9 +49,11 @@ class ControladorUsuarios:
     def efetuar_login(self, email, senha):
         usuario = UsuarioDAO().fazer_login(email, senha)
         if usuario:
-            print("Login bem-sucedido!")
+            
             self.usuario_logado = usuario
             self.controlador.tela_sistema()
         else:
-            print("Email ou senha incorretos!")
+            self.controlador.tela_login("Email ou senha incorretos!")
 
+    def deslogar_usuario(self):
+        self.usuario_logado = None
