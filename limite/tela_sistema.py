@@ -1,4 +1,6 @@
 import tkinter as tk
+from limite.tela_catalogo import TelaCatalogo
+
 
 class TelaSistema(tk.Frame):
     def __init__(self, master, controlador):
@@ -9,7 +11,8 @@ class TelaSistema(tk.Frame):
     def abre_tela_principal(self):
 
         if self.controlador.controlador_usuarios.usuario_logado:
-            papel = self.controlador.controlador_usuarios.usuario_logado.papel
+            print(self.controlador.controlador_usuarios.usuario_logado["papel"])
+            papel = self.controlador.controlador_usuarios.usuario_logado["papel"]
             if papel == 1:  # Administrador
                 self.redirecionar_administrador()
             elif papel == 2:  # Funcionário
@@ -18,7 +21,7 @@ class TelaSistema(tk.Frame):
                 self.controlador.controlador_usuarios.usuario_logado = None
                 self.controlador.tela_usuario_deslogado()  # Qualquer outro papel
         else:
-            self.controlador.tela_usuario_deslogado()  # Usuário não logado
+            TelaCatalogo(self, self.controlador).pack()  # Usuário não logado
 
 
     def redirecionar_administrador(self):

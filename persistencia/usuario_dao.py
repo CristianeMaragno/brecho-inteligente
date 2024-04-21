@@ -7,12 +7,14 @@ class UsuarioDAO(DAO):
         super().__init__()
         super().connect()
         super().create_table('users', {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'papel': 'INTEGER'})
+    
     def add(self, usuario: Usuario):
         data = [
             (usuario.nome, usuario.email, usuario.senha, usuario.papel),
         ]
 
         super().insert_data('users (nome, email, senha, papel)', data)
+
 
     def update(self, usuario: Usuario):
         data = {
@@ -43,6 +45,15 @@ class UsuarioDAO(DAO):
             return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
         else:
             return None
+    
+    def pegar_por_nome(self, nome):
+        query = "SELECT * FROM users WHERE nome = '%s'" % nome
+        usuario = self.executar(query)
+        if usuario:
+            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
+        else:
+            return None
+
 
     def executar(self, custom_query):
         return super().execute_query_one_value(custom_query)
@@ -54,9 +65,18 @@ class UsuarioDAO(DAO):
 
         # Consulta SQL para verificar se o email e senha correspondem a um usuário
         cursor.execute("SELECT * FROM users WHERE email=? AND senha=?", (email, senha))
-        usuario = cursor.fetchone()
+        data = cursor.fetchone()
 
         self.disconnect()
 
-        # Se um usuário foi encontrado, retorna True, caso contrário, retorna False
-        return usuario is not None
+        if data:
+            usuario_data = {
+                'id': data[0],
+                'nome': data[1],
+                'email': data[2],
+                'senha': data[3],
+                'papel': data[4]
+            }
+            return usuario_data
+        else:
+            return None

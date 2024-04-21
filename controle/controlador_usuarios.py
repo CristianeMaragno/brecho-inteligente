@@ -1,7 +1,6 @@
 from limite.tela_usuario import TelaUsuario
 from limite.tela_criar_usuario import TelaCriarUsuario
 from limite.tela_login import TelaLogin
-from limite.tela_catalogo import TelaCatalogo
 from entidade.usuario import Usuario
 from persistencia.usuario_dao import UsuarioDAO
 
@@ -22,9 +21,6 @@ class ControladorUsuarios:
 
     def abre_tela_login(self):
         return TelaLogin(self.master, self)
-    
-    def abre_tela_catalogo(self):
-        return TelaCatalogo(self.master, self)
 
     def voltar(self):
         self.usuario = None
@@ -36,7 +32,7 @@ class ControladorUsuarios:
             UsuarioDAO().update(usuario)
         else:
             UsuarioDAO().add(usuario)
-
+    
     def deletar_usuario(self, id):
         UsuarioDAO().remove(id)
 
@@ -55,7 +51,7 @@ class ControladorUsuarios:
         if usuario:
             print("Login bem-sucedido!")
             self.usuario_logado = usuario
-            # Adicione aqui o código para redirecionar para a próxima tela após o login
+            self.controlador.tela_sistema()
         else:
             print("Email ou senha incorretos!")
 
