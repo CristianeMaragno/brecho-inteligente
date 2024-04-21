@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from entidade.categoria import TipoRestauracao as tr
+from entidade.categoria import Categorias as ct
 
 
 class MenuPeca(tk.Frame):
@@ -59,7 +59,7 @@ class RegistrarPeca(tk.Frame):
         self.custo_aquisicao = ttk.Entry(self.frame, width=30)
         self.custo_aquisicao.pack(pady=10, padx=10)
 
-        opcoes = tr.tipos.values()
+        opcoes = ct.tipos.values()
         tipo_label = ttk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
 
@@ -103,7 +103,7 @@ class RegistrarPeca(tk.Frame):
         ajustes = [self.listbox.get(idx) for idx in selecionados]
 
         if not ajustes:
-            ajustes.append(tr.tipos["NENHUM"])
+            ajustes.append(ct.tipos["NENHUM"])
 
         dados = {
             "descrição": self.entry_descricao.get(),
@@ -147,7 +147,7 @@ class UpdatePeca(tk.Frame):
             self.frame.pack_forget()
             self.update()
         else:
-            messagebox.showinfo("Erro", "Por favor informe um valor válido de custo de aquisição.")
+            messagebox.showinfo("Erro", "Por favor informe um id válido.")
             self.get_id()
 
     def update(self):
@@ -162,7 +162,7 @@ class UpdatePeca(tk.Frame):
         self.custo_aquisicao.pack(pady=10, padx=10)
 
         # Checkbox de restauração
-        opcoes = tr.tipos.values()
+        opcoes = ct.tipos.values()
         tipo_label = tk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
 
@@ -203,7 +203,7 @@ class UpdatePeca(tk.Frame):
         selecionados = self.listbox.curselection()
         ajustes = [self.listbox.get(idx) for idx in selecionados]
         if not ajustes:
-            ajustes.append(tr.tipos["NENHUM"])
+            ajustes.append(ct.tipos["NENHUM"])
 
         dados = {
             "id": self.id_peca,

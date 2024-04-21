@@ -1,4 +1,4 @@
-class TipoRestauracao:
+class Categorias:
 
     tipos = {
         "LAVAR": 'Lavagem',
@@ -10,9 +10,3 @@ class TipoRestauracao:
         "CUSTOMIZACAO": 'Customização',
         "NENHUM": 'Nenhum ajuste'
     }
-
-class Categoria:
-    def __init__(self, id, tipo, custo: float):
-        self.__id = id
-        self.__tipo = tipo
-        self.__custo = custo

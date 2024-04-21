@@ -44,7 +44,8 @@ class PecaDAO(DAO):
         with self.conn:
             old_peca = self.get_by_id(codigo)
             if old_peca and old_peca.status:
-                self.strdao.remove(old_peca.status.id)
+                self.strdao.remove(old_peca.id)
+            self.strdao.add(peca.status)
             query = (f"UPDATE pecas SET descricao = '{peca.descricao}', imagem = '{peca.imagem}', " \
                      f"status_id = '{peca.status.id}', custo_aquisicao = {peca.custo_aquisicao}, " \
                      f"titulo = '{peca.titulo}', preco = '{peca.preco}' " \

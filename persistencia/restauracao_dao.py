@@ -41,9 +41,9 @@ class RestauracaoDAO(DAO):
             return None
 
     def update(self, codigo: str, st: StatusRestauracao):
-        query = f"UPDATE status_restauracao SET categorias = '{st.categorias}', " \
-                f"WHERE id = '{codigo}'"
-        super().execute_query(query)
+        categorias_str = json.dumps(st.categorias)
+        query = f"UPDATE status_restauracao SET categorias = '{categorias_str}' WHERE id = '{codigo}'"
+        self.execute(query)
 
     def execute(self, custom_query):
         return super().execute_query(custom_query)
