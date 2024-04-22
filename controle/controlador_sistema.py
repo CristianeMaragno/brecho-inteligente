@@ -6,6 +6,7 @@ class ControladorSistema:
 
     def __init__(self, root):
         self.root = root
+        self.root.geometry("1440x1024")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.tela_atual = None
 
