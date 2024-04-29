@@ -55,3 +55,5 @@ class TelaSistema(tk.Frame):
             self, text="Menu peças", command=self.controlador.tela_menu_pecas
         )
         self.view_users_button.pack(pady=10)
+        self.logout = tk.Button(self, text="Logout", command=self.controlador.deslogar)
+        self.logout.pack(pady=10)
