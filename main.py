@@ -1,16 +1,11 @@
-from controle.controlador_peca import ControladorPeca
-import ttkbootstrap as ttk
+from controle.controlador_sistema import ControladorSistema
+import tkinter as tk
 
+root = tk.Tk()
+root.title("Brechó inteligente")
+root.geometry("600x600")
 
-def main():
-    root = ttk.Window(themename="lumen")
+ControladorSistema(root).criar_adm_padrao()
+ControladorSistema(root).tela_sistema()
 
-    controller = ControladorPeca(root)
-    controller.tela_menu()
-
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
-
+root.mainloop()
