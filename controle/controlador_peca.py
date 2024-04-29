@@ -1,5 +1,11 @@
 import tkinter as tk
-from limite.tela_peca import MenuPeca, RegistrarPeca, ApagarPeca, UpdatePeca, MostrarPeca
+from limite.tela_peca import (
+    MenuPeca,
+    RegistrarPeca,
+    ApagarPeca,
+    UpdatePeca,
+    MostrarPeca,
+)
 from entidade.peca import Peca
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from persistencia.peca_dao import PecaDAO as pdao
@@ -9,9 +15,10 @@ import random
 
 
 class ControladorPeca:
-    def __init__(self, root):
+    def __init__(self, root, controlador):
         self.pdao = pdao()
         self.root = root
+        self.controlador = controlador
         self.tela_atual = None
 
     # Métodos auxiliares
@@ -75,26 +82,43 @@ class ControladorPeca:
             id = self.generate_short_hash()
 
             status = StatusRestauracao(dados["tipos_restauração"])
-            nova_peca = Peca(id, dados["descrição"], status, float(dados['custo_aquisição']), dados['imagem'])
+            nova_peca = Peca(
+                id,
+                dados["descrição"],
+                status,
+                float(dados["custo_aquisição"]),
+                dados["imagem"],
+            )
 
             print("Peça criada com sucesso!")
             print(f"Id: {nova_peca.id}")
 
             self.pdao.add(peca=nova_peca)
         else:
-            print('Erro na criação da peça!')
+            print("Erro na criação da peça!")
 
     def update(self, dados):
         status = StatusRestauracao(dados["tipos_restauração"])
-        update_peca = Peca(dados['id'], dados["descrição"], status, float(dados['custo_aquisição']), dados['imagem'])
+        update_peca = Peca(
+            dados["id"],
+            dados["descrição"],
+            status,
+            float(dados["custo_aquisição"]),
+            dados["imagem"],
+        )
 
         self.pdao.update(update_peca.id, update_peca)
-        print('Update feito com sucesso!')
+        print("Update feito com sucesso!")
 
     def mostrar(self, lista_dao):
-       pass
+        pass
 
     def apagar(self, codigo):
         if codigo:
             self.pdao.remove(codigo)
-            print('Peça apagada com sucesso!')
+            print("Peça apagada com sucesso!")
+
+    def voltar(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+        self.controlador.tela_sistema()

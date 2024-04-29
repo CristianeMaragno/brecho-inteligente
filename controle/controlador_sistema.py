@@ -1,6 +1,8 @@
 from limite.tela_sistema import TelaSistema
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
+from controle.controlador_peca import ControladorPeca
+
 
 class ControladorSistema:
 
@@ -8,13 +10,16 @@ class ControladorSistema:
         self.root = root
         self.root.geometry("1440x1024")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
+        self.__controlador_pecas = ControladorPeca(self.root, self)
         self.tela_atual = None
 
     def criar_adm_padrao(self):
         if UsuarioDAO().pegar_por_nome("Administrador Padrão"):
             None
         else:
-            self.controlador_usuarios.criar_usuario(0, "Administrador Padrão", "adm0", "0", 1, False)
+            self.controlador_usuarios.criar_usuario(
+                0, "Administrador Padrão", "adm0", "0", 1, False
+            )
 
     def tela_sistema(self):
         if self.tela_atual:
@@ -30,6 +35,12 @@ class ControladorSistema:
         self.tela_atual = self.__controlador_usuarios.abre_tela_usuario()
         self.tela_atual.pack()
 
+    def tela_menu_pecas(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = self.__controlador_pecas.tela_menu()
+
     def tela_criar_usuarios(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
@@ -40,14 +51,14 @@ class ControladorSistema:
     def tela_login(self, erro=None):
         if self.tela_atual:
             self.tela_atual.pack_forget()
-        
+
         self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
         self.tela_atual.pack()
 
     def deslogar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
-        
+
         self.controlador_usuarios.deslogar_usuario()
 
         self.tela_atual = self.__controlador_usuarios.abre_tela_login("")

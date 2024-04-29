@@ -22,7 +22,7 @@ class PecaDAO(DAO):
             peca = self.get_by_id(codigo)
             if peca and peca.status:
                 self.strdao.remove(peca.status.id)
-            self.execute(f"DELETE FROM pecas WHERE id = '{codigo}'")
+            super().delete('pecas', 'id', codigo)
 
     def get_all(self):
         rows = super().fetch_data('pecas')
