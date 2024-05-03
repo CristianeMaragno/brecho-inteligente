@@ -21,8 +21,8 @@ class ControladorUsuarios:
         self.usuario = None
         self.controlador.tela_sistema()
 
-    def criar_usuario(self, id, nome, email, senha, papel, editar):
-        usuario = Usuario(id, nome, email, senha, papel)
+    def criar_usuario(self, id, nome, email, senha, papel, nascimento, editar):
+        usuario = Usuario(id, nome, email, senha, nascimento, papel)
         if(editar):
             UsuarioDAO().update(usuario)
         else:
