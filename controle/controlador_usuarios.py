@@ -49,7 +49,6 @@ class ControladorUsuarios:
     def efetuar_login(self, email, senha):
         usuario = UsuarioDAO().fazer_login(email, senha)
         if usuario:
-            
             self.usuario_logado = usuario
             self.controlador.tela_sistema()
         else:
