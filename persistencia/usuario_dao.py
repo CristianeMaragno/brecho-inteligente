@@ -69,6 +69,7 @@ class UsuarioDAO(DAO):
 
         self.disconnect()
 
+        #instanciar usuário! ao inves de devolver varios dados.
         if data:
             usuario_data = {
                 'id': data[0],
