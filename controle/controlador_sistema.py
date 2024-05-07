@@ -1,5 +1,6 @@
 import tkinter as tk
 from limite.tela_sistema import TelaSistema
+from limite.tela_catalogo import TelaCatalogo
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_peca import ControladorPeca
@@ -9,7 +10,7 @@ class ControladorSistema:
 
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1440x1024")
+        self.root.geometry("600x600")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_pecas = ControladorPeca(self.root, self)
         self.tela_atual = None
@@ -27,6 +28,13 @@ class ControladorSistema:
             self.tela_atual.pack_forget()
 
         self.tela_atual = TelaSistema(self.root, self)
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
+
+    def tela_catalogo(self, master):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+        
+        self.tela_atual = TelaCatalogo(master, self)
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):

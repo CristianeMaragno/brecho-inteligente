@@ -24,7 +24,7 @@ class TelaSistema(tk.Frame):
                 self.controlador.controlador_usuarios.usuario_logado = None
                 self.controlador.tela_usuario_deslogado()  # Qualquer outro papel
         else:
-            TelaCatalogo(self, self.controlador).pack()  # Usuário não logado
+            self.controlador.tela_catalogo(self) #usuário não logado
 
     def redirecionar_administrador(self):
         # Button to open User Creation Screen
