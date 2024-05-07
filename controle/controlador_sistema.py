@@ -1,3 +1,4 @@
+import tkinter as tk
 from limite.tela_sistema import TelaSistema
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
@@ -26,7 +27,7 @@ class ControladorSistema:
             self.tela_atual.pack_forget()
 
         self.tela_atual = TelaSistema(self.root, self)
-        self.tela_atual.pack()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):
         if self.tela_atual:
