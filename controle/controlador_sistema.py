@@ -1,3 +1,4 @@
+import limite
 import tkinter as tk
 from limite.tela_sistema import TelaSistema
 from limite.tela_catalogo import TelaCatalogo
@@ -31,11 +32,15 @@ class ControladorSistema:
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_catalogo(self, master):
-        if self.tela_atual:
-            self.tela_atual.pack_forget()
-        
-        self.tela_atual = TelaCatalogo(master, self)
-        self.tela_atual.pack(fill=tk.BOTH, expand=True)
+        if isinstance(self.tela_atual, (limite.tela_catalogo.TelaCatalogo, limite.tela_sistema.TelaSistema)):
+            pass #caso já esteja na tela de catálogo não acontece nada
+
+        else:
+            if self.tela_atual:
+                self.tela_atual.pack_forget()
+            
+            self.tela_atual = TelaCatalogo(master, self)
+            self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):
         if self.tela_atual:
@@ -58,11 +63,16 @@ class ControladorSistema:
         self.tela_atual.pack()
 
     def tela_login(self, erro=None):
-        if self.tela_atual:
-            self.tela_atual.pack_forget()
+        if (isinstance(self.tela_atual, (limite.tela_login.TelaLogin)) 
+            and self.tela_atual.mensagem_erro == erro):
+            pass #caso já esteja na tela de login não acontece nada
 
-        self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
-        self.tela_atual.pack()
+        else:
+            if self.tela_atual:
+                self.tela_atual.pack_forget()
+
+            self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
+            self.tela_atual.pack()
 
     def deslogar(self):
         if self.tela_atual:

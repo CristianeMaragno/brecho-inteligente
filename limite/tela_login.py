@@ -20,13 +20,14 @@ class TelaLogin(TelaPadrao):
                                 height=608,
                                 padding=20,
                                 style='light')
+        
         frame_login.pack(fill="none",
                          expand=False,
-                         padx=335,
-                         pady=208)
+                         pady=32)
 
         titulo_label = ttk.Label(frame_login,
                                  text="LOGIN",
+                                 style="inverse-light",
                                  font=("Helvetica", 14, "bold"))
         titulo_label.pack(pady=10)
 
@@ -56,14 +57,6 @@ class TelaLogin(TelaPadrao):
                                       bootstyle='primary',
                                       width=height_px)
         self.botao_login.pack(pady=10)
-
-        # Botão para voltar
-        self.go_back_button = ttk.Button(frame_login,
-                                         text="Voltar",
-                                         command=self.controladorUsuario.voltar,
-                                         bootstyle='primary',
-                                         width=height_px)
-        self.go_back_button.pack(pady=10)
 
         # Label para mensagem de erro
         self.mensagem_erro_label = ttk.Label(frame_login,
