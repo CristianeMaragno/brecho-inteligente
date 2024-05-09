@@ -20,7 +20,7 @@ class ControladorUsuarios:
         return TelaCriarUsuario(self.master, self, self.usuario)
 
     def abre_tela_login(self, erro=None):
-        return TelaLogin(self.master, self, erro)
+        return TelaLogin(self.master, self.controlador, self, erro)
 
     def voltar(self):
         self.usuario = None

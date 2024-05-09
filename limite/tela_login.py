@@ -1,32 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkbootstrap import Style
+from limite.tela_padrao import TelaPadrao
 
-class TelaLogin(tk.Frame):
-    def __init__(self, master, controlador, erro):
-        super().__init__(master)
-        self.controlador = controlador
+class TelaLogin(TelaPadrao):
+    def __init__(self, master, controladorSistema, controladorUsuario, erro=""):
         self.mensagem_erro = erro
-        self.abre_tela_login()
         self.senha = None
         self.email = None
+        super().__init__(master, controladorSistema, controladorUsuario)
     
-    def abre_tela_login(self):
-        style = Style(theme='litera')
+    def conteudo(self):
         width_px = 570
         height_px = 80
-
-        #NavBar
-        frame_navbar = ttk.Frame(self,
-                                 height=72,
-                                 width= 2000,
-                                 padding=18)
-        frame_navbar.pack(fill="x", side="top")
-
-        label = ttk.Label(frame_navbar,
-                          text="Brechó Inteligente",
-                          font=("Helvetica", 14, "bold"))
-        label.pack(side="top", anchor="w")
 
         #Frame Login
         frame_login = ttk.Frame(self,
@@ -74,7 +60,7 @@ class TelaLogin(tk.Frame):
         # Botão para voltar
         self.go_back_button = ttk.Button(frame_login,
                                          text="Voltar",
-                                         command=self.controlador.voltar,
+                                         command=self.controladorUsuario.voltar,
                                          bootstyle='primary',
                                          width=height_px)
         self.go_back_button.pack(pady=10)
@@ -106,4 +92,4 @@ class TelaLogin(tk.Frame):
     def enviar_dados(self):
         email = self.entry_email.get()
         senha = self.entry_senha.get()
-        self.controlador.efetuar_login(email, senha)
+        self.controladorUsuario.efetuar_login(email, senha)

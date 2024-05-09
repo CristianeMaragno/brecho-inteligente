@@ -4,13 +4,12 @@ from abc import ABC, abstractmethod
 from ttkbootstrap import Style
 
 class TelaPadrao(ABC, tk.Frame):
-    def __init__(self, master, controlador):
+    def __init__(self, master, controlador, controladorUsuario = None):
         super().__init__(master)
         self.controlador = controlador
-        self.__login = None
-        self.__conteudo = None
         self.style = Style(theme="cerculean")
         self.pack(fill=tk.BOTH, expand=True)
+        self.controladorUsuario = controladorUsuario
 
         self.tela()
     
@@ -53,7 +52,4 @@ class TelaPadrao(ABC, tk.Frame):
         login_button.pack(side="right", padx=5)
 
     def exibir_catalogo(self):
-        pass
-
-    def exibir_login(self):
         pass
