@@ -61,6 +61,7 @@ class TelaLogin(TelaPadrao):
         # Label para mensagem de erro
         self.mensagem_erro_label = ttk.Label(frame_login,
                                              text=self.mensagem_erro,
+                                             style="light.inverse.TLabel",
                                              foreground="red")
         self.mensagem_erro_label.pack()
 
