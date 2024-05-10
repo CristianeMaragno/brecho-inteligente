@@ -12,7 +12,7 @@ class TelaLogin(TelaPadrao):
         super().__init__(master, controladorSistema, controladorUsuario)
 
     def conteudo(self):
-        height_px = 80
+        w = 80
 
         # Frame Login
         frame_login = ttk.Frame(self,
@@ -34,7 +34,7 @@ class TelaLogin(TelaPadrao):
         # Campo de entrada para o email
         self.entry_email = ttk.Entry(frame_login,
                                      bootstyle='primary',
-                                     width=height_px)
+                                     width=w)
         self.entry_email.insert(0, "Email")
         self.entry_email.bind("<FocusIn>", self.clear_email_placeholder)
         self.entry_email.bind("<FocusOut>", self.restore_email_placeholder)
@@ -44,7 +44,7 @@ class TelaLogin(TelaPadrao):
         self.entry_senha = ttk.Entry(frame_login,
                                      show="*",
                                      bootstyle='primary',
-                                     width=height_px)
+                                     width=w)
         self.entry_senha.insert(0, "Senha")
         self.entry_senha.bind("<FocusIn>", self.clear_password_placeholder)
         self.entry_senha.bind("<FocusOut>", self.restore_password_placeholder)
@@ -55,7 +55,7 @@ class TelaLogin(TelaPadrao):
                                       text="Entrar",
                                       command=self.enviar_dados,
                                       bootstyle='primary',
-                                      width=height_px)
+                                      width=w)
         self.botao_login.pack(pady=10)
 
         # Label para mensagem de erro

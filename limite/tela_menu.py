@@ -1,4 +1,5 @@
 from limite.tela_padrao import TelaPadrao
+from controle.controlador_peca import ControladorPeca
 import tkinter as tk
 import ttkbootstrap as ttk
 
@@ -20,36 +21,64 @@ class TelaMenu(TelaPadrao):
         
     def menu_adm(self):
          # Button to open User Creation Screen
-        self.add_user_button = tk.Button(self.frame_menu,
+        self.add_user_button = ttk.Button(self.frame_menu,
                                          text="Cadastrar usuários",
                                          width=30,
                                          command=self.controlador.
                                          tela_criar_usuarios)
-        self.add_user_button.pack(pady=10)
+        self.add_user_button.pack(padx=10, pady=10)
 
         # Button to open View User Screen
-        self.view_users_button = tk.Button(self.frame_menu,
+        self.view_users_button = ttk.Button(self.frame_menu,
                                            text="Listar usuários",
                                            width=30,
                                            command=self.controlador.
                                            tela_usuarios)
-        self.view_users_button.pack(pady=10)
+        self.view_users_button.pack(padx=10, pady=10)
 
-        self.view_users_button = tk.Button(self.frame_menu,
-                                           text="Menu peças",
-                                           width=30,
-                                           command=self.controlador.
-                                           tela_menu_pecas)
-        self.view_users_button.pack(pady=10)
+        self.menu_fun()
 
     def menu_fun(self):
 
-        self.view_users_button = tk.Button(self.frame_menu,
-                                           text="Menu peças",
-                                           width=30,
-                                           command=self.controlador.
-                                           tela_menu_pecas)
-        self.view_users_button.pack(pady=10)
+        self.button1 = ttk.Button(
+            self.frame_menu,
+            text="Registrar",
+            #command=self.controller.tela_registrar,
+            width=30,
+        )
+        self.button1.pack(padx=10, pady=10)
+
+        self.button2 = ttk.Button(
+            self.frame_menu,
+            text="Update",
+            #command=self.controller.tela_update,
+            width=30,
+        )
+        self.button2.pack(padx=10, pady=10)
+
+        self.button3 = ttk.Button(
+            self.frame_menu,
+            text="Apagar",
+            #command=self.controller.tela_apagar,
+            width=30,
+        )
+        self.button3.pack(padx=10, pady=10)
+
+        self.button4 = ttk.Button(
+            self.frame_menu,
+            text="Mostrar",
+            #command=self.controller.tela_mostrar,
+            width=30,
+        )
+        self.button4.pack(padx=10, pady=10)
+
+        # self.button5 = ttk.Button(
+        #     self.frame_menu,
+        #     text="Retornar",
+        #     #command=self.controller.voltar,
+        #     width=30,
+        # )
+        # self.button5.pack(padx=10, pady=10)
 
     def frame(self):
         self.frame_menu = ttk.Frame(self,
