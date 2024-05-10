@@ -66,7 +66,6 @@ class UsuarioDAO(DAO):
         # Consulta SQL para verificar se o email e senha correspondem a um usuário
         cursor.execute("SELECT * FROM users WHERE email=? AND senha=?", (email, senha))
         data = cursor.fetchone()
-        print("data:", data)
 
         self.disconnect()
 
