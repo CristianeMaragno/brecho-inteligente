@@ -5,7 +5,7 @@ from ttkbootstrap import Style
 
 
 class TelaPadrao(ABC, tk.Frame):
-    def __init__(self, master, controlador, controladorUsuario=None):
+    def __init__(self, master, controlador, controladorUsuario):
         super().__init__(master)
         self.controlador = controlador
         self.style = Style(theme="cerculean")
