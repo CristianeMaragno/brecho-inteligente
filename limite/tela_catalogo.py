@@ -3,8 +3,8 @@ import tkinter as tk
 
 
 class TelaCatalogo(TelaPadrao):
-    def __init__(self, master, controlador):
-        super().__init__(master, controlador)
+    def __init__(self, master, controlador, controladorUsuario=None):
+        super().__init__(master, controlador, controladorUsuario)
 
     def controlador(self):
         return self.__controlador

@@ -5,6 +5,6 @@ root = tk.Tk()
 root.title("Brechó inteligente")
 
 ControladorSistema(root).criar_adm_padrao()
-ControladorSistema(root).tela_sistema()
+ControladorSistema(root).tela_catalogo()
 
 root.mainloop()

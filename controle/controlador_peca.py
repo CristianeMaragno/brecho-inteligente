@@ -120,4 +120,4 @@ class ControladorPeca:
     def voltar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
-        self.controlador.tela_sistema()
+        self.controlador.tela_menu()

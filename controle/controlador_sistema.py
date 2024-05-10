@@ -1,6 +1,4 @@
-import limite
 import tkinter as tk
-from limite.tela_sistema import TelaSistema
 from limite.tela_catalogo import TelaCatalogo
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
@@ -24,24 +22,12 @@ class ControladorSistema:
                 0, "Administrador Padrão", "adm0", "0", 1, False
             )
 
-    def tela_sistema(self):
+    def tela_catalogo(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = TelaSistema(self.root, self)
+        self.tela_atual = TelaCatalogo(self.root, self, self.controlador_usuarios)
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
-
-    def tela_catalogo(self, master):
-        if isinstance(self.tela_atual, (limite.tela_catalogo.TelaCatalogo,
-                                        limite.tela_sistema.TelaSistema)):
-            pass  # caso já esteja na tela de catálogo não acontece nada
-
-        else:
-            if self.tela_atual:
-                self.tela_atual.pack_forget()
-
-            self.tela_atual = TelaCatalogo(master, self)
-            self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):
         if self.tela_atual:
@@ -64,16 +50,11 @@ class ControladorSistema:
         self.tela_atual.pack()
 
     def tela_login(self, erro=None):
-        if (isinstance(self.tela_atual, (limite.tela_login.TelaLogin))
-                and self.tela_atual.mensagem_erro == erro):
-            pass  # caso já esteja na tela de login não acontece nada
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
 
-        else:
-            if self.tela_atual:
-                self.tela_atual.pack_forget()
-
-            self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
-            self.tela_atual.pack()
+        self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
+        self.tela_atual.pack()
 
     def deslogar(self):
         if self.tela_atual:
@@ -82,6 +63,13 @@ class ControladorSistema:
         self.controlador_usuarios.deslogar_usuario()
 
         self.tela_atual = self.__controlador_usuarios.abre_tela_login("")
+        self.tela_atual.pack()
+
+    def tela_menu(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+    
+        self.tela_atual = self.controlador_usuarios.abre_tela_menu()
         self.tela_atual.pack()
 
     @property
