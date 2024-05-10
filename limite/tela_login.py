@@ -1,26 +1,26 @@
 import tkinter as tk
 from tkinter import ttk
-from ttkbootstrap import Style
 from limite.tela_padrao import TelaPadrao
 
+
 class TelaLogin(TelaPadrao):
-    def __init__(self, master, controladorSistema, controladorUsuario, erro=""):
+    def __init__(self, master, controladorSistema,
+                 controladorUsuario, erro=""):
         self.mensagem_erro = erro
         self.senha = None
         self.email = None
         super().__init__(master, controladorSistema, controladorUsuario)
-    
+
     def conteudo(self):
-        width_px = 570
         height_px = 80
 
-        #Frame Login
+        # Frame Login
         frame_login = ttk.Frame(self,
                                 width=770,
                                 height=608,
                                 padding=20,
                                 style='light')
-        
+
         frame_login.pack(fill="none",
                          expand=False,
                          pady=32)

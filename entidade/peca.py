@@ -1,5 +1,12 @@
 class Peca:
-    def __init__(self, id, descricao, status, custo_aquisicao, titulo=None, imagem=None, preco=None):
+    def __init__(self,
+                 id,
+                 descricao,
+                 status,
+                 custo_aquisicao,
+                 titulo=None,
+                 imagem=None,
+                 preco=None):
         self.__id = id
         self.__descricao = descricao
         self.__titulo = titulo or ''

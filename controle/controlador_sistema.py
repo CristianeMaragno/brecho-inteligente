@@ -32,13 +32,14 @@ class ControladorSistema:
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_catalogo(self, master):
-        if isinstance(self.tela_atual, (limite.tela_catalogo.TelaCatalogo, limite.tela_sistema.TelaSistema)):
-            pass #caso já esteja na tela de catálogo não acontece nada
+        if isinstance(self.tela_atual, (limite.tela_catalogo.TelaCatalogo,
+                                        limite.tela_sistema.TelaSistema)):
+            pass  # caso já esteja na tela de catálogo não acontece nada
 
         else:
             if self.tela_atual:
                 self.tela_atual.pack_forget()
-            
+
             self.tela_atual = TelaCatalogo(master, self)
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
@@ -63,9 +64,9 @@ class ControladorSistema:
         self.tela_atual.pack()
 
     def tela_login(self, erro=None):
-        if (isinstance(self.tela_atual, (limite.tela_login.TelaLogin)) 
-            and self.tela_atual.mensagem_erro == erro):
-            pass #caso já esteja na tela de login não acontece nada
+        if (isinstance(self.tela_atual, (limite.tela_login.TelaLogin))
+                and self.tela_atual.mensagem_erro == erro):
+            pass  # caso já esteja na tela de login não acontece nada
 
         else:
             if self.tela_atual:

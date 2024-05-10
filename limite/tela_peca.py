@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
 from entidade.categoria import Categorias as ct
 
 
@@ -70,7 +69,9 @@ class RegistrarPeca(tk.Frame):
         self.registrar()
 
     def registrar(self):
-        self.frame = ttk.Labelframe(self, text="Cadastro de peça", bootstyle="info")
+        self.frame = ttk.Labelframe(self,
+                                    text="Cadastro de peça",
+                                    bootstyle="info")
         self.frame.pack(pady=10, padx=20)
 
         # Entry de custo de aquisição
@@ -91,9 +92,9 @@ class RegistrarPeca(tk.Frame):
         checkbox_frame.pack(padx=10, pady=10)
 
         # Criando listbox
-        self.listbox = tk.Listbox(
-            checkbox_frame, selectmode=tk.MULTIPLE, width=30, height=len(opcoes)
-        )
+        self.listbox = tk.Listbox(checkbox_frame,
+                                  selectmode=tk.MULTIPLE,
+                                  width=30, height=len(opcoes))
         for opcao in opcoes:
             self.listbox.insert(tk.END, opcao)
         self.listbox.pack(padx=10, pady=10)
@@ -126,9 +127,10 @@ class RegistrarPeca(tk.Frame):
             custo_aquisicao = float(self.custo_aquisicao.get())
             if custo_aquisicao:
                 self.retornar()
-        except ValueError as e:
+        except ValueError:
             messagebox.showinfo(
-                "Erro", "Por favor informe um valor válido de custo de aquisição."
+                "Erro",
+                "Por favor informe um valorválido de custo de aquisição."
             )
 
     def retornar(self):
@@ -222,9 +224,9 @@ class UpdatePeca(tk.Frame):
         self.entry_descricao.pack(pady=10, padx=10)
 
         # Criando listbox
-        self.listbox = tk.Listbox(
-            checkbox_frame, selectmode=tk.MULTIPLE, width=30, height=len(opcoes)
-        )
+        self.listbox = tk.Listbox(checkbox_frame,
+                                  selectmode=tk.MULTIPLE,
+                                  width=30, height=len(opcoes))
         for opcao in opcoes:
             self.listbox.insert(tk.END, opcao)
         self.listbox.pack(padx=10, pady=10)
@@ -250,9 +252,10 @@ class UpdatePeca(tk.Frame):
             custo_aquisicao = float(self.custo_aquisicao.get())
             if custo_aquisicao:
                 self.retornar()
-        except ValueError as e:
+        except ValueError:
             messagebox.showinfo(
-                "Erro", "Por favor informe um valor válido de custo de aquisição."
+                "Erro",
+                "Por favor informe um valor válido de custo de aquisição."
             )
 
     def retornar(self):
@@ -286,7 +289,8 @@ class MostrarPeca(tk.Frame):
 
         tree = ttk.Treeview(
             self.frame,
-            columns=("Custo de aquisição", "Descrição", "Status", "Restaurações"),
+            columns=("Custo de aquisição", "Descrição", "Status",
+                     "Restaurações"),
             bootstyle="success",
         )
 
@@ -330,7 +334,9 @@ class ApagarPeca(tk.Frame):
 
     def get_id(self):
         if not self.frame:
-            self.frame = ttk.Labelframe(self, text="Apagar", bootstyle="danger")
+            self.frame = ttk.Labelframe(self,
+                                        text="Apagar",
+                                        bootstyle="danger")
             self.frame.pack(padx=10, pady=10)
 
             label_peca_id = tk.Label(

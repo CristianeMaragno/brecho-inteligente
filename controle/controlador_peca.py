@@ -1,4 +1,3 @@
-import tkinter as tk
 from limite.tela_peca import (
     MenuPeca,
     RegistrarPeca,

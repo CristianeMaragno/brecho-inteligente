@@ -1,14 +1,11 @@
-import limite
 import tkinter as tk
 import ttkbootstrap as ttk
 from abc import ABC, abstractmethod
 from ttkbootstrap import Style
 
-import limite.tela_catalogo
-import limite.tela_sistema
 
 class TelaPadrao(ABC, tk.Frame):
-    def __init__(self, master, controlador, controladorUsuario = None):
+    def __init__(self, master, controlador, controladorUsuario=None):
         super().__init__(master)
         self.controlador = controlador
         self.style = Style(theme="cerculean")
@@ -17,7 +14,7 @@ class TelaPadrao(ABC, tk.Frame):
         self.master = master
 
         self.tela()
-    
+
     def tela(self):
         self.criar_navbar()
 
@@ -40,8 +37,8 @@ class TelaPadrao(ABC, tk.Frame):
         pass
 
     def abrir_catalogo(self):
-            self.controlador.tela_catalogo(self.master)
-    
+        self.controlador.tela_catalogo(self.master)
+
     def criar_navbar(self):
         navbar_frame = ttk.Frame(self, style="primary.TFrame", padding=10)
         navbar_frame.pack(side="top", fill="x")
@@ -49,13 +46,11 @@ class TelaPadrao(ABC, tk.Frame):
         brecho_button = ttk.Button(navbar_frame,
                                    text="Brechó inteligente",
                                    style="primary.TButton",
-                                   command=self.abrir_catalogo,
-        )
+                                   command=self.abrir_catalogo)
         brecho_button.pack(side="left", padx=5)
 
         login_button = ttk.Button(navbar_frame,
                                   text="Login",
                                   style="primary.TButton",
-                                  command=self.controlador.tela_login
-        )
+                                  command=self.controlador.tela_login)
         login_button.pack(side="right", padx=5)

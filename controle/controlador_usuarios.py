@@ -4,6 +4,7 @@ from limite.tela_login import TelaLogin
 from entidade.usuario import Usuario
 from persistencia.usuario_dao import UsuarioDAO
 
+
 class ControladorUsuarios:
 
     def __init__(self, master, controlador):
@@ -28,24 +29,24 @@ class ControladorUsuarios:
 
     def criar_usuario(self, id, nome, email, senha, papel, editar):
         usuario = Usuario(id, nome, email, senha, papel)
-        if(editar):
+        if (editar):
             UsuarioDAO().update(usuario)
         else:
             UsuarioDAO().add(usuario)
-    
+
     def deletar_usuario(self, id):
         UsuarioDAO().remove(id)
 
     def editar_usuario(self, id):
         usuario = UsuarioDAO().pegar_por_id(id)
-        if(usuario):
+        if (usuario):
             self.usuario = usuario
             self.controlador.tela_criar_usuarios()
 
     def pegar_todos(self):
         usuarios = UsuarioDAO().pegar_todos()
         return usuarios
-    
+
     def efetuar_login(self, email, senha):
         usuario = UsuarioDAO().fazer_login(email, senha)
         if usuario:
