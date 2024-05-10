@@ -40,45 +40,12 @@ class TelaMenu(TelaPadrao):
 
     def menu_fun(self):
 
-        self.button1 = ttk.Button(
-            self.frame_menu,
-            text="Registrar",
-            #command=self.controller.tela_registrar,
-            width=30,
-        )
-        self.button1.pack(padx=10, pady=10)
-
-        self.button2 = ttk.Button(
-            self.frame_menu,
-            text="Update",
-            #command=self.controller.tela_update,
-            width=30,
-        )
-        self.button2.pack(padx=10, pady=10)
-
-        self.button3 = ttk.Button(
-            self.frame_menu,
-            text="Apagar",
-            #command=self.controller.tela_apagar,
-            width=30,
-        )
-        self.button3.pack(padx=10, pady=10)
-
-        self.button4 = ttk.Button(
-            self.frame_menu,
-            text="Mostrar",
-            #command=self.controller.tela_mostrar,
-            width=30,
-        )
-        self.button4.pack(padx=10, pady=10)
-
-        # self.button5 = ttk.Button(
-        #     self.frame_menu,
-        #     text="Retornar",
-        #     #command=self.controller.voltar,
-        #     width=30,
-        # )
-        # self.button5.pack(padx=10, pady=10)
+        self.view_users_button = ttk.Button(self.frame_menu,
+                                           text="Menu peças",
+                                           width=30,
+                                           command=self.controlador.
+                                           tela_menu_pecas)
+        self.view_users_button.pack(padx=10, pady=10)
 
     def frame(self):
         self.frame_menu = ttk.Frame(self,
