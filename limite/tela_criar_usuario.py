@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkcalendar import Calendar
 from datetime import datetime, timedelta
 
+
 class TelaCriarUsuario(tk.Frame):
     def __init__(self, master, controlador, usuario):
         super().__init__(master)
@@ -17,7 +18,7 @@ class TelaCriarUsuario(tk.Frame):
         self.name_label = tk.Label(self, text="Nome:")
         self.name_label.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
         self.name_entry = tk.Entry(self)
-        if(self.editar):
+        if (self.editar):
             self.name_entry.insert(0, self.usuario.nome)
         self.name_entry.grid(row=0, column=1, padx=10, pady=5)
 
@@ -54,11 +55,14 @@ class TelaCriarUsuario(tk.Frame):
         self.role_label = tk.Label(self, text="Papel:")
         self.role_label.grid(row=5, column=0, padx=10, pady=5, sticky=tk.W)
         self.role_var = tk.StringVar()
-        self.role_combobox = ttk.Combobox(self, textvariable="Selecione o papel", state="readonly")
+        self.role_combobox = ttk.Combobox(self,
+                                          textvariable="Selecione o papel",
+                                          state="readonly")
         self.role_combobox['values'] = ("Administrador", "Funcionário")
         self.role_combobox.current(0)
         if (self.editar):
-            papel = 'Administrador' if self.usuario.papel == 1 else 'Funcionário'
+            papel = 'Administrador' if self.usuario.papel == 1 \
+                else 'Funcionário'
             self.role_combobox.set(papel)
         self.role_combobox.grid(row=5, column=1, padx=10, pady=5)
 
@@ -70,6 +74,10 @@ class TelaCriarUsuario(tk.Frame):
         # Voltar Button
         self.go_back_button = tk.Button(self, text="Voltar", command=self.controlador.voltar)
         self.go_back_button.grid(row=7, columnspan=2, padx=10, pady=10)
+        self.go_back_button = tk.Button(self,
+                                        text="Voltar",
+                                        command=self.controlador.voltar)
+        self.go_back_button.grid(row=5, columnspan=2, padx=10, pady=10)
 
     def create_edit_user(self):
         id = self.usuario.identificador if self.editar else 0

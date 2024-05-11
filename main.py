@@ -3,8 +3,8 @@ import tkinter as tk
 
 root = tk.Tk()
 root.title("Brechó inteligente")
-root.geometry("600x600")
 
-ControladorSistema(root).tela_sistema()
+ControladorSistema(root).criar_adm_padrao()
+ControladorSistema(root).tela_catalogo()
 
 root.mainloop()

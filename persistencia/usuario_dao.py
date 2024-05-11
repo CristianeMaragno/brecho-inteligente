@@ -7,12 +7,14 @@ class UsuarioDAO(DAO):
         super().__init__()
         super().connect()
         super().create_table('users', {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'nascimento_data': 'TEXT', 'papel': 'INTEGER'})
+
     def add(self, usuario: Usuario):
         data = [
             (usuario.nome, usuario.email, usuario.senha, usuario.nascimento, usuario.papel),
         ]
 
         super().insert_data('users (nome, email, senha, nascimento_data, papel)', data)
+
 
     def update(self, usuario: Usuario):
         data = {
@@ -45,5 +47,31 @@ class UsuarioDAO(DAO):
         else:
             return None
 
+    def pegar_por_nome(self, nome):
+        query = "SELECT * FROM users WHERE nome = '%s'" % nome
+        usuario = self.executar(query)
+        if usuario:
+            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
+        else:
+            return None
+
+
     def executar(self, custom_query):
         return super().execute_query_one_value(custom_query)
+
+    def fazer_login(self, email, senha):
+        # Conectar ao banco de dados SQLite
+        self.connect()
+        cursor = self.conn.cursor()
+
+        # Consulta SQL para verificar se o email e senha correspondem a um usuário
+        cursor.execute("SELECT * FROM users WHERE email=? AND senha=?", (email, senha))
+        data = cursor.fetchone()
+
+        self.disconnect()
+
+        if data:
+            usuario = Usuario(data[0], data[1], data[2], data[3], data[4])
+            return usuario
+        else:
+            return None
