@@ -60,6 +60,15 @@ class MenuPeca(tk.Frame):
         )
         self.button5.pack(padx=10, pady=10)
 
+        self.button6 = ttk.Button(
+            frame,
+            text="Restauração para a venda",
+            command=self.controller.tela_rest_p_venda,
+            bootstyle="secondary",
+            width=30,
+        )
+        self.button6.pack(padx=10, pady=10)
+
 
 class RegistrarPeca(tk.Frame):
     def __init__(self, master, controller):

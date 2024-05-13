@@ -5,6 +5,7 @@ from limite.tela_peca import (
     UpdatePeca,
     MostrarPeca,
 )
+from limite.tela_rest_para_venda import TelaRestauracaoParaVenda
 from entidade.peca import Peca
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from persistencia.peca_dao import PecaDAO as pdao
@@ -14,10 +15,11 @@ import random
 
 
 class ControladorPeca:
-    def __init__(self, root, controlador):
+    def __init__(self, root, controlador, controladorUsuarios):
         self.pdao = pdao()
         self.root = root
         self.controlador = controlador
+        self.controlador_usuarios = controladorUsuarios
         self.tela_atual = None
 
     # Métodos auxiliares
@@ -73,6 +75,13 @@ class ControladorPeca:
             self.tela_atual.pack_forget()
 
         self.tela_atual = ApagarPeca(self.root, self)
+        self.tela_atual.pack()
+
+    def tela_rest_p_venda(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = TelaRestauracaoParaVenda(self.root, self.controlador, self.controlador_usuarios, self)
         self.tela_atual.pack()
 
     # Métodos de tratamento de dados
