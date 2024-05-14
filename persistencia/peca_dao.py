@@ -1,15 +1,14 @@
 from persistencia.dao import DAO
-from persistencia.restauracao_dao import RestauracaoDAO as strdao
 from entidade.peca import Peca
 
 class PecaDAO(DAO):
-    def __init__(self):
+    def __init__(self, strdao):
         super().__init__()
         self.conn = None
         super().connect()
         super().create_table('pecas', {'id': 'TEXT PRIMARY KEY', 'descricao': 'TEXT', 'status_id': 'TEXT',
                                         'custo_aquisicao': 'REAL', 'titulo': 'TEXT', 'imagem': 'TEXT', 'preco': 'REAL', })
-        self.strdao = strdao()
+        self.strdao = strdao
 
     def add(self, peca: Peca):
         data = [(peca.id, peca.descricao, peca.status.id, peca.custo_aquisicao, peca.titulo, peca.imagem, peca.preco)]
@@ -46,9 +45,9 @@ class PecaDAO(DAO):
             if old_peca and old_peca.status:
                 self.strdao.remove(old_peca.id)
             self.strdao.add(peca.status)
-            query = (f"UPDATE pecas SET descricao = '{peca.descricao}', imagem = '{peca.imagem}', " \
-                     f"status_id = '{peca.status.id}', custo_aquisicao = {peca.custo_aquisicao}, " \
-                     f"titulo = '{peca.titulo}', preco = '{peca.preco}' " \
+            query = (f"UPDATE pecas SET descricao = '{peca.descricao}', imagem = '{peca.imagem}', " 
+                     f"status_id = '{peca.status.id}', custo_aquisicao = {peca.custo_aquisicao}, " 
+                     f"titulo = '{peca.titulo}', preco = '{peca.preco}' " 
                      f"WHERE id = '{codigo}'")
             self.execute(query)
 

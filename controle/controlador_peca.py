@@ -7,8 +7,12 @@ from limite.tela_peca import (
 )
 from limite.tela_rest_para_venda import TelaRestauracaoParaVenda
 from entidade.peca import Peca
+from entidade.categoria import Categoria
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from persistencia.peca_dao import PecaDAO as pdao
+from persistencia.categorias_dao import CategoriasDAO as ctdao
+from persistencia.restauracao_dao import RestauracaoDAO as strdao
+
 
 import hashlib
 import random
@@ -16,19 +20,43 @@ import random
 
 class ControladorPeca:
     def __init__(self, root, controlador, controladorUsuarios):
-        self.pdao = pdao()
+        self.ctdao = ctdao()
+        self.strdao = strdao(self.ctdao)
+        self.pdao = pdao(self.strdao)
         self.root = root
         self.controlador = controlador
         self.controlador_usuarios = controladorUsuarios
         self.tela_atual = None
 
+        self.criar_categorias()
+
     # Métodos auxiliares
-    def generate_short_hash(self, length=8):
+    @staticmethod
+    def generate_short_hash(length=8):
         random.seed()
         seed = random.randint(0, 1000000)
         hash_object = hashlib.sha256(str(seed).encode())
         hex_hash = hash_object.hexdigest()
         return hex_hash[:length]
+
+    def criar_categorias(self):
+        criar = self.ctdao.get_by_id('0')
+        if criar:
+            return
+
+        categorias = [
+            Categoria("0", 'Lavar', 0.0),
+            Categoria("1", 'Passar', 0.0),
+            Categoria("2", 'Reparar danos', 0.0),
+            Categoria("3", 'Restaurar detalhes', 0.0),
+            Categoria("4", 'Remover manchas', 0.0),
+            Categoria("5", 'Tingir', 0.0),
+            Categoria("6", 'Customizar', 0.0),
+            Categoria("7", 'Nenhum ajuste', 0.0)
+        ]
+
+        for ct in categorias:
+            self.ctdao.add(ct)
 
     def get_peca(self, codigo: str):
 
@@ -53,7 +81,7 @@ class ControladorPeca:
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = RegistrarPeca(self.root, self)
+        self.tela_atual = RegistrarPeca(self.root, self, self.ctdao.get_all())
         self.tela_atual.pack()
 
     def tela_update(self):
@@ -89,7 +117,11 @@ class ControladorPeca:
         if dados:
             id = self.generate_short_hash()
 
-            status = StatusRestauracao(dados["tipos_restauração"])
+            categorias = []
+            for ct_id in dados["tipos_restauração"]:
+                categoria = self.ctdao.get_by_id(str(ct_id))
+                categorias.append(categoria)
+            status = StatusRestauracao(categorias)
             nova_peca = Peca(
                 id,
                 dados["descrição"],
@@ -106,7 +138,11 @@ class ControladorPeca:
             print("Erro na criação da peça!")
 
     def update(self, dados):
-        status = StatusRestauracao(dados["tipos_restauração"])
+        categorias = []
+        for ct_id in dados["tipos_restauração"]:
+            categoria = self.ctdao.get_by_id(str(ct_id))
+            categorias.append(categoria)
+        status = StatusRestauracao(categorias)
         update_peca = Peca(
             dados["id"],
             dados["descrição"],

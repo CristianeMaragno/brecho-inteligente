@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import ttkbootstrap as ttk
+from persistencia.categorias_dao import CategoriasDAO as ctdao
 from entidade.categoria import Categorias as ct
 
 
@@ -71,8 +72,9 @@ class MenuPeca(tk.Frame):
 
 
 class RegistrarPeca(tk.Frame):
-    def __init__(self, master, controller):
+    def __init__(self, master, controller, categorias):
         super().__init__(master)
+        self.categorias = categorias
         self.controller = controller
         self.frame = None
         self.registrar()
@@ -90,7 +92,10 @@ class RegistrarPeca(tk.Frame):
         self.custo_aquisicao = ttk.Entry(self.frame, width=30)
         self.custo_aquisicao.pack(pady=10, padx=10)
 
-        opcoes = ct.tipos.values()
+        opcoes = []
+        for categoria in self.categorias:
+            opcoes.append(categoria.nome)
+
         tipo_label = ttk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
 
@@ -143,11 +148,11 @@ class RegistrarPeca(tk.Frame):
             )
 
     def retornar(self):
-        selecionados = self.listbox.curselection()
-        ajustes = [self.listbox.get(idx) for idx in selecionados]
+        ajustes = []
+        ajustes = self.listbox.curselection()
 
         if not ajustes:
-            ajustes.append(ct.tipos["NENHUM"])
+            ajustes.append(0)
 
         dados = {
             "descrição": self.entry_descricao.get(),
@@ -268,10 +273,11 @@ class UpdatePeca(tk.Frame):
             )
 
     def retornar(self):
-        selecionados = self.listbox.curselection()
-        ajustes = [self.listbox.get(idx) for idx in selecionados]
+        ajustes = []
+        ajustes = self.listbox.curselection()
+
         if not ajustes:
-            ajustes.append(ct.tipos["NENHUM"])
+            ajustes.append(0)
 
         dados = {
             "id": self.id_peca,
@@ -310,7 +316,10 @@ class MostrarPeca(tk.Frame):
         tree.heading("Restaurações", text="Restaurações")
 
         for peca in self.pecas:
-            categorias = ", ".join(peca.status.categorias)
+            categorias_lista = []
+            for ct in peca.status.categorias:
+                categorias_lista.append(ct.nome)
+            categorias = ", ".join(categorias_lista)
             tree.insert(
                 "",
                 "end",
