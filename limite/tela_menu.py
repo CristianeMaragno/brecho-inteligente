@@ -36,6 +36,14 @@ class TelaMenu(TelaPadrao):
                                            tela_usuarios)
         self.view_users_button.pack(padx=10, pady=10)
 
+        # editar calculadora
+        self.calculadora = ttk.Button(self.frame_menu,
+                                           text="Editar Calculadora",
+                                           width=30,
+                                           command=self.controlador.
+                                           tela_calculadora)
+        self.calculadora.pack(padx=10, pady=10)
+
         self.menu_fun()
 
     def menu_fun(self):

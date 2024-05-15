@@ -3,6 +3,7 @@ from limite.tela_catalogo import TelaCatalogo
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_peca import ControladorPeca
+from controle.controlador_calculadora import ControladorCalculadora
 
 
 class ControladorSistema:
@@ -12,6 +13,7 @@ class ControladorSistema:
         self.root.geometry("600x600")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_pecas = ControladorPeca(self.root, self)
+        self.__controlador_calculadora = ControladorCalculadora(self.root, self)
         self.tela_atual = None
 
     def criar_adm_padrao(self):
@@ -72,9 +74,22 @@ class ControladorSistema:
         self.tela_atual = self.controlador_usuarios.abre_tela_menu()
         self.tela_atual.pack()
 
+    def tela_calculadora(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+    
+        self.tela_atual = self.controlador_calculadora.abre_tela_calculadora()
+        self.tela_atual.pack()
+
     @property
     def controlador_usuarios(self):
         return self.__controlador_usuarios
 
+    @property
+    def controlador_calculadora(self):
+        return self.__controlador_calculadora
+
     def encerra_sistema(self):
         exit(0)
+    
+

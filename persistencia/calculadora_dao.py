@@ -7,11 +7,11 @@ class CalculadoraDAO(DAO):
         self.create_table()
 
     def create_table(self):
-        query = '''CREATE TABLE IF NOT EXISTS custos (
-                    categoria TEXT PRIMARY KEY,
-                    custo REAL
-                )'''
-        super().create_table(query)
+        columns = {
+            'categoria': 'TEXT PRIMARY KEY',
+            'custo': 'REAL'
+        }
+        super().create_table('custos', columns)
 
         # Inserir as categorias com custo padrão
         categorias_padrao = [
@@ -25,30 +25,38 @@ class CalculadoraDAO(DAO):
             ('taxaDeLucro', 0.0)
         ]
         for categoria, custo in categorias_padrao:
-            if not self.get_custo(categoria):
+            if not self.verifica_categoria(categoria):
                 self.add_custo(categoria, custo)
 
-
     def add_custo(self, categoria, custo):
-        query = "INSERT INTO custos (categoria, custo) VALUES (?, ?)"
-        data = (categoria, custo)
-        super().insert_data(query, data)
+        if not self.get_custo(categoria):
+            data = [(categoria, custo)]
+            super().insert_data('custos', data)
+
 
     def get_custo(self, categoria):
-        query = "SELECT custo FROM custos WHERE categoria = ?"
-        data = (categoria,)
-        result = super().fetch_data(query, data)
-        if result:
-            return result[0][0]
-        else:
-            return None
+        result = super().fetch_data('custos')
+        for row in result:
+            if row[0] == categoria:
+                return row[1]
+        return None
+    
+    def verifica_categoria(self, categoria):
+        result = super().fetch_data('custos')
+        for row in result:
+            if row[0] == categoria:
+                return True
+        return False
 
     def update_custo(self, categoria, novo_custo):
-        query = "UPDATE custos SET custo = ? WHERE categoria = ?"
-        data = (novo_custo, categoria)
-        super().execute_query(query, data)
+        set_values = {'custo': novo_custo}
+        condition = "categoria = ?"
+        super().update('custos', set_values, condition, (categoria,))
 
     def delete_custo(self, categoria):
-        query = "DELETE FROM custos WHERE categoria = ?"
-        data = (categoria,)
-        super().execute_query(query, data)
+        super().delete('custos', 'categoria', categoria)
+
+    def get_todas_categorias(self):
+        result = super().fetch_data('custos')
+        categorias = [row[0] for row in result]
+        return categorias
