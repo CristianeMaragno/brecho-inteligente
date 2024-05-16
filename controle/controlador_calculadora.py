@@ -14,5 +14,8 @@ class ControladorCalculadora:
     def obter_todas_categorias(self):
         return self.cdao.get_todas_categorias()
     
-    def atualizar_custo(categoria, custo):
-        pass
+    def atualizar_custo(self, categoria, custo):
+        return self.cdao.update_custo(categoria, custo)
+    
+    def pegar_custo(self, categoria):
+        return self.cdao.get_custo(categoria)
