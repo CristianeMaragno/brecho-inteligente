@@ -2,7 +2,7 @@ from entidade.status_tipos.status import Status
 
 
 class StatusRestauracao(Status):
-    def __init__(self, categorias, custo_total=None, id=None):
+    def __init__(self, categorias, id=None, custo_total=None):
         super().__init__()
         self.__id = id or super().gen_id()
         self.__custo_total = custo_total
@@ -19,6 +19,10 @@ class StatusRestauracao(Status):
     @property
     def id(self):
         return self.__id
+
+    @categorias.setter
+    def categorias(self, categorias):
+        self.__categorias = categorias
 
     @id.setter
     def id(self, id):

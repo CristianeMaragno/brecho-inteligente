@@ -5,7 +5,7 @@ from limite.tela_peca import (
     UpdatePeca,
     MostrarPeca,
 )
-from limite.tela_rest_para_venda import TelaRestauracaoParaVenda
+from limite.tela_rest_para_venda import TelaRestauracaoParaVenda1, TelaRestauracaoParaVenda2
 from entidade.peca import Peca
 from entidade.categoria import Categoria
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
@@ -105,12 +105,16 @@ class ControladorPeca:
         self.tela_atual = ApagarPeca(self.root, self)
         self.tela_atual.pack()
 
-    def tela_rest_p_venda(self):
+    def tela_rest_p_venda(self, dados=None):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = TelaRestauracaoParaVenda(self.root, self.controlador, self.controlador_usuarios, self)
-        self.tela_atual.pack()
+        if dados:
+            self.tela_atual = TelaRestauracaoParaVenda2(self.root, self.controlador, self.controlador_usuarios, self, dados)
+            self.tela_atual.pack()
+        else:
+            self.tela_atual = TelaRestauracaoParaVenda1(self.root, self.controlador, self.controlador_usuarios, self)
+            self.tela_atual.pack()
 
     # Métodos de tratamento de dados
     def registrar(self, dados):
@@ -139,10 +143,16 @@ class ControladorPeca:
 
     def update(self, dados):
         categorias = []
-        for ct_id in dados["tipos_restauração"]:
-            categoria = self.ctdao.get_by_id(str(ct_id))
-            categorias.append(categoria)
-        status = StatusRestauracao(categorias)
+
+        peca = self.pdao.get_by_id(dados["id"])
+        status = self.strdao.get_by_id(peca.status.id)
+
+        if dados["tipos_restauração"]:
+            for ct_id in dados["tipos_restauração"]:
+                categoria = self.ctdao.get_by_id(str(ct_id))
+                categorias.append(categoria)
+            status = StatusRestauracao(categorias)
+
         update_peca = Peca(
             dados["id"],
             dados["descrição"],

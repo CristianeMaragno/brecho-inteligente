@@ -20,29 +20,49 @@ class Peca:
         return self.__id
 
     @property
-    def custo_aquisicao(self):
-        return self.__custo_aquisicao
-
-    @property
     def descricao(self):
         return self.__descricao
+
+    @descricao.setter
+    def descricao(self, value):
+        self.__descricao = value
 
     @property
     def titulo(self):
         return self.__titulo
 
+    @titulo.setter
+    def titulo(self, value):
+        self.__titulo = value
+
     @property
     def status(self):
         return self.__status
+
+    @status.setter
+    def status(self, value):
+        self.__status = value
+
+    @property
+    def custo_aquisicao(self):
+        return self.__custo_aquisicao
+
+    @custo_aquisicao.setter
+    def custo_aquisicao(self, value):
+        self.__custo_aquisicao = value
 
     @property
     def imagem(self):
         return self.__imagem
 
+    @imagem.setter
+    def imagem(self, value):
+        self.__imagem = value
+
     @property
     def preco(self):
         return self.__preco
 
-    @status.setter
-    def status(self, status):
-        self.__status = status
+    @preco.setter
+    def preco(self, value):
+        self.__preco = value
