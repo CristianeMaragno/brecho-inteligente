@@ -77,21 +77,23 @@ class ControladorPeca:
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = MenuPeca(self.root, self)
+        self.tela_atual = MenuPeca(self.root, self.controlador, self.controlador_usuarios, self)
         self.tela_atual.pack()
 
     def tela_registrar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = RegistrarPeca(self.root, self, self.ctdao.get_all())
+        self.tela_atual = RegistrarPeca(self.root, self.controlador,
+                                        self.controlador_usuarios, self, self.ctdao.get_all())
         self.tela_atual.pack()
 
     def tela_update(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = UpdatePeca(self.root, self)
+        self.tela_atual = UpdatePeca(self.root, self.controlador,
+                                        self.controlador_usuarios, self, self.ctdao.get_all())
         self.tela_atual.pack()
 
     def tela_mostrar(self):
@@ -145,7 +147,6 @@ class ControladorPeca:
             print("Erro na criação da peça!")
 
     def update(self, dados):
-
         status = None
         if dados['status'] == 'em_restauracao':
             categorias = []
@@ -162,8 +163,9 @@ class ControladorPeca:
             dados["descricao"],
             status,
             dados["custo_aquisicao"],
+            dados["titulo"],
             dados["imagem"],
-            dados["titulo"]
+            dados["preco"]
         )
 
         self.pdao.update(update_peca)

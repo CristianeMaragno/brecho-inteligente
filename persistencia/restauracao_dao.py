@@ -6,6 +6,7 @@ import json
 class RestauracaoDAO(DAO):
     def __init__(self, ctdao):
         super().__init__()
+        self.conn = None
         super().connect()
         super().create_table('status_restauracao',
                              {'categorias': 'TEXT', 'id': 'TEXT PRIMARY KEY'})
@@ -52,16 +53,18 @@ class RestauracaoDAO(DAO):
         else:
             return None
 
-    def update(self, codigo: str, st: StatusRestauracao):
-        categorias_lista = []
-        for categoria in st.categorias:
-            categorias_lista.append(categoria.id)
-        categorias_json = json.dumps(categorias_lista)
-        query = f"UPDATE status_restauracao SET categorias = '{categorias_json}' WHERE id = '{codigo}'"
-        self.execute(query)
+    def update(self, st: StatusRestauracao):
+        with self.conn:
+            categorias_lista = []
+            for categoria in st.categorias:
+                categorias_lista.append(categoria.id)
+            categorias_json = json.dumps(categorias_lista)
+            query = f"UPDATE status_restauracao SET categorias = '{categorias_json}' WHERE id = '{st.id}'"
+            self.execute(query)
 
     def execute(self, custom_query):
-        return super().execute_query(custom_query)
+        with self.conn:
+            return super().execute_query(custom_query)
 
     def exists(self, status_id: str) -> bool:
         query = f"SELECT COUNT(*) FROM status_restauracao WHERE id = '{status_id}'"

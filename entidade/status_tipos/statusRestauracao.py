@@ -34,3 +34,4 @@ class StatusRestauracao(Status):
 
     def __str__(self):
         return 'Em restauração'
+

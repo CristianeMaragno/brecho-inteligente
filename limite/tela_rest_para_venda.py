@@ -1,4 +1,5 @@
 from limite.tela_padrao import TelaPadrao
+from entidade.status_tipos.statusRestauracao import StatusRestauracao
 import ttkbootstrap as ttk
 from tkinter import messagebox
 import tkinter as tk
@@ -16,21 +17,40 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
     def conteudo(self):
         self.frame()
 
-        self.frame_secundario = ttk.Frame(self.frame_principal, style='light')
-        self.frame_secundario.pack()
-        # Criação dos frames
-        self.criar_frame_direito()
-        # Frame esquerdo
-        if self.peca_selecionada:
-            self.criar_frame_esquerdo()
-
-    def criar_frame_direito(self):
-        # Navegação das peças por ID
         pecas = self.controladorPeca.pdao.get_all()
-        ids_das_pecas = []
+        self.ids_das_pecas = []
         if pecas:
             for peca in pecas:
-                ids_das_pecas.append(peca.id)
+                if isinstance(peca.status, StatusRestauracao):
+                    self.ids_das_pecas.append(peca.id)
+        if self.ids_das_pecas:
+            self.peca_selecionada = self.controladorPeca.pdao.get_by_id(self.ids_das_pecas[0])
+
+        self.frame_secundario = ttk.Frame(self.frame_principal, style='light')
+        self.frame_secundario.pack()
+
+        if self.peca_selecionada:
+            self.criar_frame_esquerdo()
+            self.criar_frame_direito()
+        else:
+            self.nao_ha_pecas()
+
+    def nao_ha_pecas(self):
+        label = ttk.Label(self.frame_principal,
+                                text="Não há peças para colocar à venda.",
+                                style="inverse-light",
+                                font=("Helvetica", 12, "bold"))
+        label.pack(padx=10, pady=10)
+
+        # Botão de voltar
+        self.botao_voltar = ttk.Button(self.frame_principal,
+                                       text="Voltar",
+                                       width=30,
+                                       command=self.controladorPeca.
+                                             tela_menu)
+        self.botao_voltar.pack(padx=10, pady=5)
+
+    def criar_frame_direito(self):
 
         # Definindo o frame direito
         self.frame_direito = ttk.Frame(
@@ -53,14 +73,11 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         label_id.grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.combobox = ttk.Combobox(self.frame_peca_info,
                                      bootstyle="primary",
-                                     values=ids_das_pecas,
+                                     values=self.ids_das_pecas,
                                      font=("Helvetica", 10))
         self.combobox.grid(row=0, column=1, padx=10, pady=10, sticky="w")
         self.combobox.bind("<<ComboboxSelected>>", self.apresentar_infos)
-
-        if not self.peca_selecionada:
-            self.peca_selecionada = self.controladorPeca.pdao.get_by_id(ids_das_pecas[0])
-            print(self.peca_selecionada)
+        self.combobox.set(self.peca_selecionada.id)
 
         label_custo_aquisicao = ttk.Label(self.frame_peca_info,
                                           text='Custo aquisição',
@@ -88,20 +105,18 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         self.descricao_peca.bind("<FocusOut>", self.restore_descricao_placeholder)
         self.descricao_peca.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 
-        # Botão enviar para a venda
-        self.botao_enviar_venda = ttk.Button(self.frame_direito,
+        self.botao_voltar = ttk.Button(self.frame_direito,
                                              text="Voltar",
                                              width=30,
                                              command=self.controladorPeca.
                                              tela_menu)
-        self.botao_enviar_venda.pack(padx=10, pady=10)
+        self.botao_voltar.pack(padx=10, pady=10)
 
-        # Botão de voltar
-        self.botao_voltar = ttk.Button(self.frame_direito,
+        self.botao_enviar_venda = ttk.Button(self.frame_direito,
                                        text="Enviar para venda",
                                        width=30,
                                        command=self.prosseguir)
-        self.botao_voltar.pack(padx=10, pady=5)
+        self.botao_enviar_venda.pack(padx=10, pady=5)
 
     def apresentar_infos(self, event):
         self.peca_selecionada = self.controladorPeca.pdao.get_by_id(self.combobox.get())
@@ -117,8 +132,6 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
             style='light'
         )
         self.frame_esquerdo.grid(row=1, column=0, sticky="n")
-
-        self.combobox.set(self.peca_selecionada.id)
 
         frame_tabela = ttk.Frame(self.frame_esquerdo)
         frame_tabela.pack(expand=False)
@@ -354,6 +367,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             'status': 'a_venda',
             'imagem': self.peca.imagem,
             'titulo': self.peca.titulo,
+            'preco': self.peca.preco
         }
 
         # Update DAO

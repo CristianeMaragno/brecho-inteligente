@@ -43,8 +43,8 @@ class DAO(ABC):
         self.cursor.execute(query, tuple(set_values.values()))
         self.conn.commit()
 
-    def execute_query(self, query):
-        self.cursor.execute(query)
+    def execute_query(self, query, params=()):
+        self.cursor.execute(query, params)
         return self.cursor.fetchall()
 
     def execute_query_one_value(self, query):
