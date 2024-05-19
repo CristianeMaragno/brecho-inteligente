@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import ttkbootstrap as ttk
 from persistencia.categorias_dao import CategoriasDAO as ctdao
+from persistencia.categorias_dao import CategoriasDAO as ctdao
 from entidade.categoria import Categorias as ct
 
 
@@ -203,7 +204,7 @@ class UpdatePeca(tk.Frame):
     def checar_id(self):
         resposta = self.controller.get_peca(self.entry_peca_id.get())
         if resposta:
-            self.id_peca = resposta.id
+            self.peca = resposta
             self.frame.pack_forget()
             self.update()
         else:
@@ -279,14 +280,20 @@ class UpdatePeca(tk.Frame):
         if not ajustes:
             ajustes.append(0)
 
-        dados = {
-            "id": self.id_peca,
-            "descrição": self.entry_descricao.get(),
-            "tipos_restauração": ajustes,
-            "imagem": "",
-            "custo_aquisição": self.custo_aquisicao.get(),
+        self.peca.descricao = self.entry_descricao.get()
+        self.peca.custo_aquisicao = self.custo_aquisicao.get()
+
+        dados_update = {
+            'id': self.peca.id,
+            'custo_aquisicao': self.peca.custo_aquisicao,
+            'descricao': self.peca.descricao,
+            'status': 'em_restauracao',
+            'ajustes': ajustes,
+            'imagem': '',
+            'titulo': '',
         }
-        self.controller.update(dados)
+
+        self.controller.update(dados_update)
         self.controller.tela_menu()
 
 

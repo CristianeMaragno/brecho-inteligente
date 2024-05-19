@@ -6,12 +6,14 @@ from limite.tela_peca import (
     MostrarPeca,
 )
 from limite.tela_rest_para_venda import TelaRestauracaoParaVenda1, TelaRestauracaoParaVenda2
+from entidade.status_tipos.statusAVenda import StatusAVenda
 from entidade.peca import Peca
 from entidade.categoria import Categoria
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from persistencia.peca_dao import PecaDAO as pdao
 from persistencia.categorias_dao import CategoriasDAO as ctdao
 from persistencia.restauracao_dao import RestauracaoDAO as strdao
+from persistencia.avenda_dao import AVendaDAO as savdao
 
 
 import hashlib
@@ -21,8 +23,9 @@ import random
 class ControladorPeca:
     def __init__(self, root, controlador, controladorUsuarios):
         self.ctdao = ctdao()
+        self.savdao = savdao()
         self.strdao = strdao(self.ctdao)
-        self.pdao = pdao(self.strdao)
+        self.pdao = pdao(self.strdao, self.savdao)
         self.root = root
         self.controlador = controlador
         self.controlador_usuarios = controladorUsuarios
@@ -142,26 +145,28 @@ class ControladorPeca:
             print("Erro na criação da peça!")
 
     def update(self, dados):
-        categorias = []
 
-        peca = self.pdao.get_by_id(dados["id"])
-        status = self.strdao.get_by_id(peca.status.id)
-
-        if dados["tipos_restauração"]:
-            for ct_id in dados["tipos_restauração"]:
-                categoria = self.ctdao.get_by_id(str(ct_id))
-                categorias.append(categoria)
-            status = StatusRestauracao(categorias)
+        status = None
+        if dados['status'] == 'em_restauracao':
+            categorias = []
+            if dados["ajustes"]:
+                for ct_id in dados["ajustes"]:
+                    categoria = self.ctdao.get_by_id(str(ct_id))
+                    categorias.append(categoria)
+                status = StatusRestauracao(categorias)
+        else:
+            status = StatusAVenda()
 
         update_peca = Peca(
             dados["id"],
-            dados["descrição"],
+            dados["descricao"],
             status,
-            float(dados["custo_aquisição"]),
+            dados["custo_aquisicao"],
             dados["imagem"],
+            dados["titulo"]
         )
 
-        self.pdao.update(update_peca.id, update_peca)
+        self.pdao.update(update_peca)
         print("Update feito com sucesso!")
 
     def mostrar(self, lista_dao):

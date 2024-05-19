@@ -40,38 +40,45 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
             padding=20,
             style='light'
         )
-        self.frame_direito.grid(row=1, column=1, padx=10, pady=10, sticky="n")
+        self.frame_direito.grid(row=1, column=1, sticky="n")
 
         self.frame_peca_info = ttk.Frame(self.frame_direito,
                                          style="light")
         self.frame_peca_info.pack()
 
         label_id = ttk.Label(self.frame_peca_info,
-                             text='ID')
+                             text='ID',
+                             style="inverse-light",
+                             font=("Helvetica", 12))
         label_id.grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.combobox = ttk.Combobox(self.frame_peca_info,
                                      bootstyle="primary",
-                                     values=ids_das_pecas)
+                                     values=ids_das_pecas,
+                                     font=("Helvetica", 10))
         self.combobox.grid(row=0, column=1, padx=10, pady=10, sticky="w")
-
-        botao_ok = ttk.Button(self.frame_peca_info,
-                                             text="Buscar",
-                                             width=5,
-                                             command=self.apresentar_infos)
-        botao_ok.grid(row=0, column=3, padx=10, pady=10, sticky="w")
+        self.combobox.bind("<<ComboboxSelected>>", self.apresentar_infos)
 
         if not self.peca_selecionada:
             self.peca_selecionada = self.controladorPeca.pdao.get_by_id(ids_das_pecas[0])
             print(self.peca_selecionada)
 
-        label_custo_aquisicao = ttk.Label(self.frame_peca_info, text='Custo aquisição')
+        label_custo_aquisicao = ttk.Label(self.frame_peca_info,
+                                          text='Custo aquisição',
+                                          style="inverse-light",
+                                          font=("Helvetica", 10))
         label_custo_aquisicao.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         custo_aquisicao = f'R${self.peca_selecionada.custo_aquisicao}'
-        label_valor_custo_aquisicao = ttk.Label(self.frame_peca_info, text=custo_aquisicao)
+        label_valor_custo_aquisicao = ttk.Label(self.frame_peca_info,
+                                                text=custo_aquisicao,
+                                                style="inverse-light",
+                                                font=("Helvetica", 10))
         label_valor_custo_aquisicao.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
-        label_descricao = ttk.Label(self.frame_peca_info, text='Descrição')
+        label_descricao = ttk.Label(self.frame_peca_info,
+                                    text='Descrição',
+                                    style="inverse-light",
+                                    font=("Helvetica", 10))
         label_descricao.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         self.descricao_peca = ttk.Entry(self.frame_peca_info,
@@ -96,8 +103,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
                                        command=self.prosseguir)
         self.botao_voltar.pack(padx=10, pady=5)
 
-    def apresentar_infos(self):
-        print("Seleção: ", self.combobox.get())
+    def apresentar_infos(self, event):
         self.peca_selecionada = self.controladorPeca.pdao.get_by_id(self.combobox.get())
         self.criar_frame_direito()
         self.criar_frame_esquerdo()
@@ -110,14 +116,12 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
             padding=20,
             style='light'
         )
-        self.frame_esquerdo.grid(row=1, column=0, padx=10, pady=10, sticky="n")
+        self.frame_esquerdo.grid(row=1, column=0, sticky="n")
 
-        label_id = ttk.Label(self.frame_esquerdo, text=f'ID selecionado: {self.peca_selecionada.id}')
-        label_id.pack(pady=10)
+        self.combobox.set(self.peca_selecionada.id)
 
         frame_tabela = ttk.Frame(self.frame_esquerdo)
         frame_tabela.pack(expand=False)
-
 
         # Definindo a estrutura da tabela
 
@@ -242,6 +246,11 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         super().__init__(master, controlador, controladorUsuario)
 
     def conteudo(self):
+
+        print(self.peca.id)
+        print(self.peca.custo_aquisicao)
+        print(self.peca.status.categorias)
+        print(self.peca.descricao)
         self.frame()
 
         self.frame_secundario = ttk.Frame(self.frame_principal)
@@ -266,37 +275,45 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
 
         # Imagem
 
-        button = ttk.Button(self.frame_secundario,
+        botao_imagem = ttk.Button(self.frame_secundario,
                             text="Select Image",
                             command=self.open_file_dialog,
                             width=50)
-        button.grid(row=1, column=0, padx=10, pady=10)
+        botao_imagem.grid(row=1, column=0, padx=10, pady=10)
 
         self.image_label = ttk.Label(self.frame_secundario)
         self.image_label.grid(row=2, column=0, padx=10, pady=10)
+        self.path_imagem = None
 
         # 2. Tabela
 
         tabela_frame = ttk.Frame(self.frame_secundario)
         tabela_frame.grid(row=3, column=0, padx=10, pady=10)
 
-        linha_um = ttk.Label(tabela_frame, text='CUSTO AQUISIÇÃO')
-        linha_um.grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        linha_dois = ttk.Label(tabela_frame, text='CUSTO DE AJUSTES')
-        linha_dois.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        linha_tres = ttk.Label(tabela_frame, text='TAXA LUCRO')
-        linha_tres.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        linha_quatro = ttk.Label(tabela_frame, text='PREÇO SUGERIDO')
-        linha_quatro.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        linha_um = ttk.Label(tabela_frame, text='CUSTO AQUISIÇÃO', font=("Helvetica", 12))
+        linha_um.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        linha_dois = ttk.Label(tabela_frame, text='CUSTO DE AJUSTES', font=("Helvetica", 12))
+        linha_dois.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        linha_tres = ttk.Label(tabela_frame, text='TAXA LUCRO', font=("Helvetica", 12))
+        linha_tres.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        linha_quatro = ttk.Label(tabela_frame, text='PREÇO SUGERIDO', font=("Helvetica", 12))
+        linha_quatro.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
-        valor_um = ttk.Label(tabela_frame, text=self.peca.custo_aquisicao)
-        valor_um.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-        valor_dois = ttk.Label(tabela_frame, text=self.peca.status.custo_total)
-        valor_dois.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-        valor_tres = ttk.Label(tabela_frame, text='0.0')
-        valor_tres.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-        valor_quatro = ttk.Label(tabela_frame, text='0.0')
-        valor_quatro.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        custo_aquisicao = self.peca.custo_aquisicao
+        valor_um = ttk.Label(tabela_frame, text=custo_aquisicao, font=("Helvetica", 12, "bold"))
+        valor_um.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+
+        custo_ajustes = self.peca.status.custo_total
+        valor_dois = ttk.Label(tabela_frame, text=custo_ajustes, font=("Helvetica", 12, "bold"))
+        valor_dois.grid(row=1, column=1, padx=5, pady=5, sticky="e")
+
+        taxa_lucro = 0 # Modificar para o valor da calculadora
+        valor_tres = ttk.Label(tabela_frame, text=taxa_lucro, font=("Helvetica", 12, "bold"))
+        valor_tres.grid(row=2, column=1, padx=5, pady=5, sticky="e")
+
+        valor_sugerido = custo_aquisicao + custo_ajustes + taxa_lucro
+        valor_quatro = ttk.Label(tabela_frame, text=valor_sugerido, font=("Helvetica", 12, "bold"))
+        valor_quatro.grid(row=3, column=1, padx=5, pady=5, sticky="e")
 
         # 3. Botões
         self.botao_calcular = ttk.Button(self.frame_principal,
@@ -309,14 +326,38 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
                                              text="Voltar",
                                              width=50,
                                              command=self.controladorPeca.
-                                             tela_menu)
+                                             tela_rest_p_venda)
         self.botao_enviar_venda.pack(padx=10, pady=10)
 
     def checar_valores(self):
-        pass
+        try:
+            titulo = self.entry_titulo.get()
+            preco = self.entry_preco.get()
+            if float(preco) and titulo:
+                self.prosseguir()
+        except ValueError:
+            messagebox.showinfo(
+                "Erro",
+                "Por favor informe um título e um preço válido."
+            )
 
     def prosseguir(self):
-        pass
+        self.peca.titulo = self.entry_titulo.get()
+        self.peca.preco = self.entry_preco.get()
+        if self.path_imagem:
+            self.peca.imagem = self.path_imagem
+
+        dados_update = {
+            'id': self.peca.id,
+            'custo_aquisicao': self.peca.custo_aquisicao,
+            'descricao': self.peca.descricao,
+            'status': 'a_venda',
+            'imagem': self.peca.imagem,
+            'titulo': self.peca.titulo,
+        }
+
+        # Update DAO
+        self.controladorPeca.update(dados_update)
 
     def clear_titulo_placeholder(self, event):
         if self.entry_titulo.get() == "Título":
@@ -340,6 +381,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             filetypes=[("Image files", "*.jpg *.jpeg *.png *.gif")]
         )
         if file_path:
+            self.path_imagem = file_path
             self.load_and_display_image(file_path)
 
     def load_and_display_image(self, file_path):
