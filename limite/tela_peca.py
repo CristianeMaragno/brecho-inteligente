@@ -146,7 +146,7 @@ class RegistrarPeca(TelaPadrao):
         ttk.Button(
             self.frame_principal,
             text="Retornar",
-            command=self.controller.tela_menu,
+            command=self.controladorPeca.tela_menu,
             bootstyle="warning",
             width=30,
         ).pack(padx=10, pady=10)
@@ -175,8 +175,8 @@ class RegistrarPeca(TelaPadrao):
             "imagem": "",
             "custo_aquisição": self.custo_aquisicao.get(),
         }
-        self.controller.registrar(dados)
-        self.controller.tela_menu()
+        self.controladorPeca.registrar(dados)
+        self.controladorPeca.tela_menu()
 
     def frame(self):
         self.frame_principal = ttk.Frame(self,

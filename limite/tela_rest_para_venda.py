@@ -190,6 +190,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
     def calcular_total(self):
         self.valor_total = 0
+        self.passou_validacao = True
         for entry, categoria, feito in self.custo_entrys:
             try:
                 if len(entry.get()) == 0:
@@ -199,11 +200,13 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
                     if valor and feito.get():
                         self.valor_total += valor
             except ValueError:
+                self.passou_validacao = False
                 messagebox.showinfo(
                     "Erro",
-                    "Por favor informe um valor válido de custo."
+                    "Por favor informe valores válidos de custo."
                 )
         self.apresentar_total(self.valor_total)
+
 
     def apresentar_total(self, valor_total):
         self.total_label.destroy()
@@ -221,19 +224,20 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
         self.calcular_total()
         # Update dos valores adquiridos
-        custo_total = self.valor_total
-        self.peca_selecionada.status.custo_total = custo_total
-        self.peca_selecionada.descricao = self.descricao_peca.get()
 
-        self.controladorPeca.tela_rest_p_venda(self.peca_selecionada)
+        if self.passou_validacao:
+            custo_total = self.valor_total
+            self.peca_selecionada.status.custo_total = custo_total
+            self.peca_selecionada.descricao = self.descricao_peca.get()
+
+            self.controladorPeca.tela_rest_p_venda(self.peca_selecionada)
 
     def clear_descricao_placeholder(self, event):
-        if self.descricao_peca.get() == "Email":
-            self.descricao_peca.delete(0, tk.END)
+        self.descricao_peca.delete(0, tk.END)
 
     def restore_descricao_placeholder(self, event):
         if not self.descricao_peca.get():
-            self.descricao_peca.insert(0, "Email")
+            self.descricao_peca.insert(0, self.peca_selecionada.descricao)
 
     def frame(self):
         self.frame_principal = ttk.Frame(self,
@@ -289,7 +293,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         # Imagem
 
         botao_imagem = ttk.Button(self.frame_secundario,
-                            text="Select Image",
+                            text="Slecionar imagem",
                             command=self.open_file_dialog,
                             width=50)
         botao_imagem.grid(row=1, column=0, padx=10, pady=10)
@@ -355,6 +359,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             )
 
     def prosseguir(self):
+
         self.peca.titulo = self.entry_titulo.get()
         self.peca.preco = self.entry_preco.get()
         if self.path_imagem:
@@ -372,6 +377,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
 
         # Update DAO
         self.controladorPeca.update(dados_update)
+        self.controladorPeca.tela_menu()
 
     def clear_titulo_placeholder(self, event):
         if self.entry_titulo.get() == "Título":
@@ -406,7 +412,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             self.image_label.config(image=image_tk)
             self.image_label.image = image_tk
         except Exception as e:
-            print(f"Error loading image: {e}")
+            print(f"Erro ao carregar imagem: {e}")
 
     def frame(self):
         self.frame_principal = ttk.Frame(self,
