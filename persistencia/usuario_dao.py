@@ -51,7 +51,7 @@ class UsuarioDAO(DAO):
         query = "SELECT * FROM users WHERE nome = '%s'" % nome
         usuario = self.executar(query)
         if usuario:
-            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
+            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4], usuario[4])
         else:
             return None
 
@@ -71,7 +71,7 @@ class UsuarioDAO(DAO):
         self.disconnect()
 
         if data:
-            usuario = Usuario(data[0], data[1], data[2], data[3], data[4])
+            usuario = Usuario(data[0], data[1], data[2], data[3], data[4], data[5])
             return usuario
         else:
             return None

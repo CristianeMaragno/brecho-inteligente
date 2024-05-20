@@ -8,7 +8,8 @@ class TelaMenu(TelaPadrao):
         super().__init__(master, controlador, controladorUsuario)
     
     def conteudo(self):
-        papel = self.controladorUsuario.usuario_logado.papel
+        papel = int(self.controladorUsuario.usuario_logado.papel)
+        print(papel)
         if papel == 1:
             self.frame()
             self.menu_adm()
@@ -46,6 +47,14 @@ class TelaMenu(TelaPadrao):
                                            command=self.controlador.
                                            tela_menu_pecas)
         self.view_users_button.pack(padx=10, pady=10)
+
+        # Button to open View Persist Sell
+        self.view_sale_record = ttk.Button(self.frame_menu,
+                                           text="Realizar Venda",
+                                           width=30,
+                                           command=self.controlador.
+                                           tela_registrar_venda)
+        self.view_sale_record.pack(padx=10, pady=10)
 
     def frame(self):
         self.frame_menu = ttk.Frame(self,

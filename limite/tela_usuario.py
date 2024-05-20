@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-
 class TelaUsuario(tk.Frame):
     def __init__(self, master, controlador, usuarios):
         super().__init__(master)
