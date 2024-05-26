@@ -1,6 +1,5 @@
 from limite.tela_menu import TelaMenu
 from limite.tela_registrar_venda import TelaRegistrarVenda
-from persistencia.peca_dao import PecaDAO
 from entidade.peca import Peca
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 
@@ -11,7 +10,6 @@ class ControladorVendas:
         self.master = master
         self.controlador = controlador
         self.usuarios = usuarios
-        self.pecaDAO = PecaDAO()
 
     def abre_tela_registrar_venda(self):
         return TelaRegistrarVenda(self.master, self, self.controlador, self.usuarios)
@@ -23,7 +21,8 @@ class ControladorVendas:
         return TelaMenu(self.master, self.controlador, self)
 
     def pegar_peca_por_id(self, id):
-        return self.pecaDAO.get_by_id(id)
+        controlador_pecas = self.controlador.controlador_pecas
+        return controlador_pecas.get_peca(id)
 
     def realizar_pagamento(self, total, forma_pagamento, pecas):
         if total == 0 or forma_pagamento is None:

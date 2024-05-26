@@ -82,6 +82,10 @@ class ControladorSistema:
         self.tela_atual.pack()
 
     @property
+    def controlador_pecas(self):
+        return self.__controlador_pecas
+
+    @property
     def controlador_usuarios(self):
         return self.__controlador_usuarios
 

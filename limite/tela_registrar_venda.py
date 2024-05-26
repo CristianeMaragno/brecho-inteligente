@@ -3,6 +3,7 @@ from tkinter import ttk
 from limite.tela_padrao import TelaPadrao
 from tkinter import messagebox
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
+from entidade.status_tipos.statusAVenda import StatusAVenda
 
 class TelaRegistrarVenda(TelaPadrao):
     def __init__(self, master, controladorVendas, controladorSistema,
@@ -106,11 +107,9 @@ class TelaRegistrarVenda(TelaPadrao):
             self.mostrar_mensagem_erro("Nenhuma peça com esse id cadastrada.")
             return
 
-        '''
         if isinstance(peca.status, StatusRestauracao):
             self.mostrar_mensagem_erro("Esta peça não está disponível para venda.")
             return
-        '''
 
         '''
         if isinstance(peca.status, StatusReserva):
