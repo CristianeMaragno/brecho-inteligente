@@ -62,9 +62,7 @@ class TelaMenu(TelaPadrao):
                                 padding=20,
                                 style='light')
 
-        self.frame_menu.pack(fill="none",
-                         expand=False,
-                         pady=32)
+        self.frame_menu.grid(row=1, column=0, padx=10, pady=32)
 
         self.titulo = ttk.Label(self.frame_menu,
                                  text="MENU",

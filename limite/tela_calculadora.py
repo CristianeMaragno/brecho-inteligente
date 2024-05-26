@@ -2,7 +2,7 @@ from limite.tela_padrao import TelaPadrao
 import ttkbootstrap as ttk
 import tkinter as tk
 
-from tkinter import VERTICAL
+from tkinter import VERTICAL, Scrollbar
 
 class TelaEditCalculadora(TelaPadrao):
     def __init__(self, master, controlador, controladorCalculadora, controladorUsuario):
@@ -10,53 +10,56 @@ class TelaEditCalculadora(TelaPadrao):
         super().__init__(master, controlador, controladorUsuario)
 
     def conteudo(self):
-        frame_container = ttk.Frame(self)
-        frame_container.pack(fill="both", expand=True)
+        frame_container = ttk.Frame(self,
+                                    padding=10,
+                                    style='light')
+        frame_container.grid(row=1, column=0)
 
+        self.label = ttk.Label(frame_container, text="CALCULADORA", style="inverse-light", font=("Helvetica", 12, "bold"))
+        self.label.grid(row=0, column=0, pady=10)
+
+        # Criando um Canvas para conter os widgets
         canvas = tk.Canvas(frame_container)
-        canvas.pack(side= "left", fill="both", expand=True)
+        canvas.grid(row=1, column=0)
 
-        scrollbar = ttk.Scrollbar(frame_container, orient=VERTICAL, command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
+        # Adicionando uma barra de rolagem vertical
+        scrollbar = Scrollbar(frame_container, orient=VERTICAL, command=canvas.yview)
+        scrollbar.grid(row=1, column=1, sticky="ns")
+        canvas.config(yscrollcommand=scrollbar.set)
 
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        content_frame = ttk.Frame(canvas)
-
-        canvas.create_window((0, 0), window=content_frame, anchor="nw")
-
-        content_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
-        frame = ttk.Frame(content_frame, width=770, height=608, padding=20, style='light')
-        frame.pack(fill="none", expand=False, pady=32)
-
-        self.label = ttk.Label(frame, text="CALCULADORA", style="inverse-light", font=("Helvetica", 12, "bold"))
-        self.label.pack(pady=32)
+        # Criando um frame dentro do Canvas para conter os widgets
+        frame = ttk.Frame(canvas, padding=(80,20), style='light')
+        canvas.create_window((0, 0), window=frame, anchor='center')
 
         categorias = ['Lavar', 'Passar', 'Reparo de Falhas', 'Restauração de Detalhes', 'Remoção de Manchas',
-                      'Tingimento', 'Customizacao', 'TaxaDeLucro']
+                    'Tingimento', 'Customizacao', 'TaxaDeLucro']
 
         self.campos_custo = {}
 
-        for categoria in categorias:
+        for i, categoria in enumerate(categorias):
             frame_categoria = ttk.Frame(frame, style='light')
-            frame_categoria.pack(fill="x", padx=10, pady=5)
+            frame_categoria.grid(row=i+1, column=0, sticky="ew", padx=10, pady=5)
 
             label_categoria = ttk.Label(frame_categoria, text=categoria, style="inverse-light")
-            label_categoria.pack(side="left", padx=10, pady=5)
+            label_categoria.pack(padx=10, pady=5, side="left")
 
             custo_atual = float(self.__controlador_calculadora.pegar_custo(categoria))
 
             campo_custo = ttk.Entry(frame_categoria, width=10)
             campo_custo.insert(0, custo_atual)
-            campo_custo.pack(side="right")
+            campo_custo.pack(padx=10, pady=5, side="right")
             self.campos_custo[categoria] = campo_custo
 
-        self.mensagem_erro_label = ttk.Label(frame, style="light.inverse.TLabel", foreground="red")
-        self.mensagem_erro_label.pack()
+        canvas.update_idletasks()  # Atualiza o tamanho do canvas para que a barra de rolagem funcione corretamente
 
-        botao_salvar = ttk.Button(frame, text="Salvar", command=self.salvar_custos)
-        botao_salvar.pack(pady=10)
+        # Configurando o tamanho do Canvas
+        canvas.config(scrollregion=canvas.bbox("all"))
+
+        self.mensagem_erro_label = ttk.Label(frame_container, style="light.inverse.TLabel", foreground="red")
+        self.mensagem_erro_label.grid(row=1, column=0, pady=10)
+
+        botao_salvar = ttk.Button(frame_container, text="Salvar", command=self.salvar_custos)
+        botao_salvar.grid(row=2, column=0, pady=10)
 
     def salvar_custos(self):
         mensagens_erro = []

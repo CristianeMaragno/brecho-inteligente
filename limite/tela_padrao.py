@@ -9,9 +9,13 @@ class TelaPadrao(ABC, tk.Frame):
         super().__init__(master)
         self.controlador = controlador
         self.style = Style(theme="cerculean")
-        self.pack(fill=tk.BOTH, expand=True)
         self.controladorUsuario = controladorUsuario
         self.master = master
+
+        # Configura linhas e colunas do grid para expandir
+        self.grid(row=0, column=0, sticky="nsew")
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
         self.tela()
 
@@ -22,7 +26,7 @@ class TelaPadrao(ABC, tk.Frame):
 
         # Footer
         self.footer_frame = ttk.Frame(self, style="primary.TFrame", padding=2)
-        self.footer_frame.pack(side="bottom", fill="x")
+        self.footer_frame.grid(row=2, column=0, sticky="ew")
 
         self.footer_label = ttk.Label(
             self.footer_frame,
@@ -30,7 +34,7 @@ class TelaPadrao(ABC, tk.Frame):
             style="primary.inverse.TLabel",
             padding=2,
         )
-        self.footer_label.pack()
+        self.footer_label.grid(row=0, column=0)
 
     @abstractmethod
     def conteudo(self):
@@ -41,7 +45,7 @@ class TelaPadrao(ABC, tk.Frame):
 
     def criar_navbar(self):
         navbar_frame = ttk.Frame(self, style="primary.TFrame", padding=10)
-        navbar_frame.pack(side="top", fill="x")
+        navbar_frame.grid(row=0, column=0, sticky="we")
 
         brecho_button = ttk.Button(navbar_frame,
                                    text="Brechó inteligente",
@@ -67,10 +71,9 @@ class TelaPadrao(ABC, tk.Frame):
                                    style="primary.inverse.TLabel")
             nome_label.pack(side="right", padx=5)
 
-            
         else:
             login_button = ttk.Button(navbar_frame,
-                                    text="Login",
-                                    style="primary.TButton",
-                                    command=self.controlador.tela_login)
+                                      text="Login",
+                                      style="primary.TButton",
+                                      command=self.controlador.tela_login)
             login_button.pack(side="right", padx=5)

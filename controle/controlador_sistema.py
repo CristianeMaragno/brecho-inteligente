@@ -10,7 +10,7 @@ class ControladorSistema:
 
     def __init__(self, root):
         self.root = root
-        self.root.geometry("600x600")
+        self.root.geometry("800x800")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_pecas = ControladorPeca(self.root, self)
         self.__controlador_calculadora = ControladorCalculadora(self.root, self)
@@ -56,7 +56,7 @@ class ControladorSistema:
             self.tela_atual.pack_forget()
 
         self.tela_atual = self.__controlador_usuarios.abre_tela_login(erro)
-        self.tela_atual.pack()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def deslogar(self):
         if self.tela_atual:
@@ -65,21 +65,21 @@ class ControladorSistema:
         self.controlador_usuarios.deslogar_usuario()
 
         self.tela_atual = self.__controlador_usuarios.abre_tela_login("")
-        self.tela_atual.pack()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_menu(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
     
         self.tela_atual = self.controlador_usuarios.abre_tela_menu()
-        self.tela_atual.pack()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_calculadora(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
     
         self.tela_atual = self.controlador_calculadora.abre_tela_calculadora()
-        self.tela_atual.pack()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     @property
     def controlador_usuarios(self):
