@@ -9,7 +9,6 @@ class TelaMenu(TelaPadrao):
     
     def conteudo(self):
         papel = int(self.controladorUsuario.usuario_logado.papel)
-        print(papel)
         if papel == 1:
             self.frame()
             self.menu_adm()
