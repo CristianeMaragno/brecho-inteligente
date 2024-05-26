@@ -20,7 +20,7 @@ class TelaMenu(TelaPadrao):
             self.controlador.catalogo()
         
     def menu_adm(self):
-         # Button to open User Creation Screen
+         # criação de usuários
         self.add_user_button = ttk.Button(self.frame_menu,
                                          text="Cadastrar usuários",
                                          width=30,
@@ -28,7 +28,7 @@ class TelaMenu(TelaPadrao):
                                          tela_criar_usuarios)
         self.add_user_button.pack(padx=10, pady=10)
 
-        # Button to open View User Screen
+        # Ver usuarios
         self.view_users_button = ttk.Button(self.frame_menu,
                                            text="Listar usuários",
                                            width=30,
@@ -44,6 +44,17 @@ class TelaMenu(TelaPadrao):
                                            tela_calculadora)
         self.calculadora.pack(padx=10, pady=10)
 
+        # Relatórios
+        self.relatorio_vendas = ttk.Button(self.frame_menu,
+                                           text="Relatório de Vendas",
+                                           width=30)
+        self.relatorio_vendas.pack(padx=10, pady=10)
+
+        self.relatorio_restauracao = ttk.Button(self.frame_menu,
+                                           text="Relatório de Restauração",
+                                           width=30)
+        self.relatorio_restauracao.pack(padx=10, pady=10)
+
         self.menu_fun()
 
     def menu_fun(self):
@@ -54,6 +65,16 @@ class TelaMenu(TelaPadrao):
                                            command=self.controlador.
                                            tela_menu_pecas)
         self.view_users_button.pack(padx=10, pady=10)
+
+        self.reserva = ttk.Button(self.frame_menu,
+                                           text="Reserva",
+                                           width=30)
+        self.reserva.pack(padx=10, pady=10)
+
+        self.venda = ttk.Button(self.frame_menu,
+                                           text="Venda",
+                                           width=30)
+        self.venda.pack(padx=10, pady=10)
 
     def frame(self):
         self.frame_menu = ttk.Frame(self,

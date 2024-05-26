@@ -55,7 +55,7 @@ class TelaEditCalculadora(TelaPadrao):
         self.mensagem_erro_label = ttk.Label(frame, style="light.inverse.TLabel", foreground="red")
         self.mensagem_erro_label.pack()
 
-        botao_salvar = ttk.Button(frame, text="Salvar", command=self.salvar_custos)
+        botao_salvar = ttk.Button(frame, text="Salvar", command=self.salvar_custos, width=40)
         botao_salvar.pack(pady=10)
 
     def salvar_custos(self):
@@ -82,7 +82,7 @@ class TelaEditCalculadora(TelaPadrao):
 
         if mensagens_erro:
             mensagem_erro_str = "\n".join(mensagens_erro)
-            self.exibir_mensagem_erro('salvo, exceto:\n' + mensagem_erro_str)
+            self.exibir_mensagem_erro('Os seguintes dados não foram salvos:\n' + mensagem_erro_str)
         else:
             self.exibir_mensagem_erro('Salvo')
 

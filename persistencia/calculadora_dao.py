@@ -23,7 +23,7 @@ class CalculadoraDAO(DAO):
                 ('Remoção de Manchas', 0.0),
                 ('Tingimento', 0.0),
                 ('Customizacao', 0.0),
-                ('TaxaDeLucro', 0.0)
+                ('Taxa de Lucro', 0.0)
             ]
 
             super().insert_data('custos', data)
@@ -34,35 +34,17 @@ class CalculadoraDAO(DAO):
         count = self.cursor.fetchone()[0]
         return count > 0
 
-    # def add_custo(self, categoria, custo):
-    #     if not self.get_custo(categoria):
-    #         data = [(categoria, custo)]
-    #         super().insert_data('custos', data)
-
-
     def get_custo(self, categoria):
          result = super().fetch_data('custos')
          for row in result:
              if row[0] == categoria:
                  return row[1]
          return None
-    
-    # def verifica_categoria(self, categoria):
-    #     result = super().fetch_data('custos')
-    #     print(result)
-    #     for row in result:
-    #         if row[0] == categoria:
-    #             return True
-    #     return False
 
     def update_custo(self, categoria, novo_custo):
         set_values = {'custo': novo_custo}
         condition = "categoria = '" + categoria + "'"
         super().update('custos', set_values, condition)
-
-
-    # def delete_custo(self, categoria):
-    #     super().delete('custos', 'categoria', categoria)
 
     def get_todas_categorias(self):
         result = super().fetch_data('custos')
