@@ -21,9 +21,8 @@ class TelaLogin(TelaPadrao):
                                 padding=20,
                                 style='light')
 
-        frame_login.pack(fill="none",
-                         expand=False,
-                         pady=32)
+        frame_login.grid(row=1, column=0, padx=10, pady=32)
+
 
         titulo_label = ttk.Label(frame_login,
                                  text="LOGIN",

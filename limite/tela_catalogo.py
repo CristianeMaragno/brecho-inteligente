@@ -11,7 +11,7 @@ class TelaCatalogo(TelaPadrao):
 
     def conteudo(self):
         self.frame_principal = tk.Frame(self)
-        self.frame_principal.pack(fill=tk.BOTH, expand=True)
+        self.frame_principal.grid(row=1, column=0, sticky="nsew")
 
         titulo_label = tk.Label(self.frame_principal,
                                 text="[Futuro catálogo]",
