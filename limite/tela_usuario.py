@@ -1,16 +1,28 @@
 import tkinter as tk
 from tkinter import ttk
+from limite.tela_padrao import TelaPadrao
 
-class TelaUsuario(tk.Frame):
-    def __init__(self, master, controlador, usuarios):
-        super().__init__(master)
-        self.controlador = controlador
+class TelaUsuario(TelaPadrao):
+    def __init__(self, master, controladorLocal, controladorSistema, usuarios):
+        self.controladorLocal = controladorLocal
         self.usuarios = usuarios
-        self.abre_tela_usuario()
+        super().__init__(master, controladorSistema, controladorLocal)
 
-    def abre_tela_usuario(self):
+    def conteudo(self):
+
+        # Frame
+        main_frame = ttk.Frame(self,
+                               width=770,
+                               height=608,
+                               padding=20,
+                               style='light')
+
+        main_frame.pack(fill="none",
+                        expand=False,
+                        pady=32)
+
         # Lista de usuarios
-        self.user_listbox = tk.Listbox(self, width=50, height=10)
+        self.user_listbox = tk.Listbox(main_frame, width=50, height=10)
         self.user_listbox.pack(side=tk.LEFT, padx=5, pady=5)
 
         for usuario in self.usuarios:
@@ -19,28 +31,28 @@ class TelaUsuario(tk.Frame):
                                      " " + usuario.nome)
 
         # Scrollbar
-        self.scrollbar = ttk.Scrollbar(self,
+        self.scrollbar = ttk.Scrollbar(main_frame,
                                        orient=tk.VERTICAL,
                                        command=self.user_listbox.yview)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.user_listbox.config(yscrollcommand=self.scrollbar.set)
 
         # Deletar Button
-        self.delete_button = ttk.Button(self,
+        self.delete_button = ttk.Button(main_frame,
                                         text="Deletar Usuário",
                                         command=self.deletar_usuario)
         self.delete_button.pack(pady=5)
 
         # Editar Button
-        self.edit_button = ttk.Button(self,
+        self.edit_button = ttk.Button(main_frame,
                                       text="Editar Usuário",
                                       command=self.editar_usuario)
         self.edit_button.pack(pady=5)
 
         # Voltar Button
-        self.go_back_button = ttk.Button(self,
+        self.go_back_button = ttk.Button(main_frame,
                                          text="Voltar",
-                                         command=self.controlador.voltar)
+                                         command=self.controladorLocal.voltar)
         self.go_back_button.pack(pady=5)
 
     def deletar_usuario(self):
@@ -50,7 +62,7 @@ class TelaUsuario(tk.Frame):
             partes = usuario_selecionado.split(" ")
             id_parte = partes[0].strip()
             id = int(id_parte)
-            self.controlador.deletar_usuario(id)
+            self.controladorLocal.deletar_usuario(id)
             self.user_listbox.delete(index[0])
 
     def editar_usuario(self):
@@ -60,4 +72,4 @@ class TelaUsuario(tk.Frame):
             partes = usuario_selecionado.split(" ")
             id_parte = partes[0].strip()
             id = int(id_parte)
-            self.controlador.editar_usuario(id)
+            self.controladorLocal.editar_usuario(id)

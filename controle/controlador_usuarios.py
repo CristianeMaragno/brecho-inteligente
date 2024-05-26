@@ -16,10 +16,10 @@ class ControladorUsuarios:
 
     def abre_tela_usuario(self):
         usuarios = self.pegar_todos()
-        return TelaUsuario(self.master, self, usuarios)
+        return TelaUsuario(self.master, self, self.controlador, usuarios)
 
     def abre_tela_criar_usuario(self):
-        return TelaCriarUsuario(self.master, self, self.usuario)
+        return TelaCriarUsuario(self.master, self, self.controlador, self.usuario)
 
     def abre_tela_login(self, erro=None):
         return TelaLogin(self.master, self.controlador, self, erro)
