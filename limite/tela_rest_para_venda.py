@@ -305,7 +305,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         valor_dois = ttk.Label(tabela_frame, text=custo_ajustes, font=("Helvetica", 12, "bold"))
         valor_dois.grid(row=1, column=1, padx=5, pady=5, sticky="e")
 
-        taxa_lucro = 0 # Modificar para o valor da calculadora
+        taxa_lucro = self.controlador.controlador_calculadora.pegar_custo("Taxa de Lucro")
         valor_tres = ttk.Label(tabela_frame, text=taxa_lucro, font=("Helvetica", 12, "bold"))
         valor_tres.grid(row=2, column=1, padx=5, pady=5, sticky="e")
 

@@ -10,9 +10,9 @@ class MenuPeca(tk.Frame):
     def __init__(self, master, controller):
         super().__init__(master)
         self.controller = controller
-        self.abrir_menu()
+        self.conteudo()
 
-    def abrir_menu(self):
+    def conteudo(self):
 
         frame = ttk.Labelframe(self, text="Menu peças")
         frame.grid(row=1, column=0, padx=10, pady=32)
@@ -84,7 +84,7 @@ class RegistrarPeca(tk.Frame):
         self.frame = ttk.Labelframe(self,
                                     text="Cadastro de peça",
                                     bootstyle="info")
-        self.frame.pack(pady=10, padx=20)
+        self.frame.grid(row=1, column=0, padx=10, pady=32)
 
         # Entry de custo de aquisição
         self.label_custo = ttk.Label(self.frame, text="Custo de aquisição:")
@@ -213,7 +213,7 @@ class UpdatePeca(tk.Frame):
 
     def update(self):
         self.frame = ttk.Labelframe(self, text="Update de peça")
-        self.frame.pack(pady=10, padx=20)
+        self.frame.grid(row=1, column=0, padx=10, pady=32)
 
         # Entry de custo de aquisição
         self.label_custo = tk.Label(self.frame, text="Custo de aquisição:")
@@ -307,7 +307,7 @@ class MostrarPeca(tk.Frame):
 
     def mostrar(self):
         self.frame = ttk.Labelframe(self, text="Peças disponíveis:")
-        self.frame.pack(padx=10, pady=10)
+        self.frame.grid(row=1, column=0, padx=10, pady=32)
 
         tree = ttk.Treeview(
             self.frame,
@@ -362,7 +362,7 @@ class ApagarPeca(tk.Frame):
             self.frame = ttk.Labelframe(self,
                                         text="Apagar",
                                         bootstyle="danger")
-            self.frame.pack(padx=10, pady=10)
+            self.frame.grid(row=1, column=0, padx=10, pady=32)
 
             label_peca_id = tk.Label(
                 self.frame, text="Insira o id da peça a ser apagada:"

@@ -59,12 +59,12 @@ class TelaMenu(TelaPadrao):
 
     def menu_fun(self):
 
-        self.view_users_button = ttk.Button(self.frame_menu,
+        self.menu_peca = ttk.Button(self.frame_menu,
                                            text="Menu peças",
                                            width=30,
                                            command=self.controlador.
                                            tela_menu_pecas)
-        self.view_users_button.pack(padx=10, pady=10)
+        self.menu_peca.pack(padx=10, pady=10)
 
         self.reserva = ttk.Button(self.frame_menu,
                                            text="Reserva",

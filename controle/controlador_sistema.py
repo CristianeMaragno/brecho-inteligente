@@ -72,7 +72,7 @@ class ControladorSistema:
     def tela_menu(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
-    
+
         self.tela_atual = self.controlador_usuarios.abre_tela_menu()
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 

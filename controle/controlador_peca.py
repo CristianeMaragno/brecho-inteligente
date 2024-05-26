@@ -116,7 +116,7 @@ class ControladorPeca:
 
         if dados:
             self.tela_atual = TelaRestauracaoParaVenda2(self.root, self.controlador, self.controlador_usuarios, self, dados)
-            self.tela_atual.pack()
+            self.tela_atual.pack(fill=tk.BOTH, expand=True)
         else:
             self.tela_atual = TelaRestauracaoParaVenda1(self.root, self.controlador, self.controlador_usuarios, self)
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
