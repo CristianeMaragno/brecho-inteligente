@@ -119,7 +119,8 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         self.botao_enviar_venda.pack(padx=10, pady=5)
 
     def apresentar_infos(self, event):
-        self.peca_selecionada = self.controladorPeca.pdao.get_by_id(self.combobox.get())
+        peca_selecionada_id = self.combobox.get()
+        self.peca_selecionada = self.controladorPeca.pdao.get_by_id(peca_selecionada_id)
         self.criar_frame_direito()
         self.criar_frame_esquerdo()
 
@@ -219,9 +220,6 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
     def prosseguir(self):
 
-        if self.descricao_peca.get():
-            print("Nova descrição: ", self.descricao_peca.get())
-
         self.calcular_total()
         # Update dos valores adquiridos
 
@@ -229,7 +227,6 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
             custo_total = self.valor_total
             self.peca_selecionada.status.custo_total = custo_total
             self.peca_selecionada.descricao = self.descricao_peca.get()
-
             self.controladorPeca.tela_rest_p_venda(self.peca_selecionada)
 
     def clear_descricao_placeholder(self, event):
@@ -263,11 +260,6 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         super().__init__(master, controlador, controladorUsuario)
 
     def conteudo(self):
-
-        print(self.peca.id)
-        print(self.peca.custo_aquisicao)
-        print(self.peca.status.categorias)
-        print(self.peca.descricao)
         self.frame()
 
         self.frame_secundario = ttk.Frame(self.frame_principal)
@@ -412,8 +404,10 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             self.image_label.config(image=image_tk)
             self.image_label.image = image_tk
         except Exception as e:
-            print(f"Erro ao carregar imagem: {e}")
-
+            messagebox.showinfo(
+                "Erro",
+                f"Erro ao carregar imagem: {e}"
+            )
     def frame(self):
         self.frame_principal = ttk.Frame(self,
                                 width=770,

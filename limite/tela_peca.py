@@ -201,7 +201,6 @@ class UpdatePeca(TelaPadrao):
         self.controladorPeca = controladorPeca
         self.categorias = categorias
         self.frame_principal = None
-        self.mensagem_erro = None
         super().__init__(master, controlador, controladorUsuario)
 
 
