@@ -208,8 +208,9 @@ class UpdatePeca(TelaPadrao):
         if not self.frame_principal:
             self.frame()
 
-            label_peca_id = tk.Label(
-                self.frame_principal, text="Insira o id da peça para fazer update:"
+            label_peca_id = ttk.Label(
+                self.frame_principal, text="Insira o id da peça para fazer update:",
+                style="inverse-light"
             )
             label_peca_id.pack()
 
@@ -226,48 +227,47 @@ class UpdatePeca(TelaPadrao):
             ttk.Button(
                 self.frame_principal,
                 text="Retornar",
-                command=self.controller.tela_menu,
+                command=self.controladorPeca.tela_menu,
                 bootstyle="warning",
                 width=30,
             ).pack(padx=10, pady=10)
 
     def checar_id(self):
-        resposta = self.controller.get_peca(self.entry_peca_id.get())
+        resposta = self.controladorPeca.get_peca(self.entry_peca_id.get())
         if resposta:
             self.peca = resposta
-            self.frame.pack_forget()
+            self.frame_principal.pack_forget()
             self.update()
         else:
             messagebox.showinfo("Erro", "Por favor informe um id válido.")
-            self.get_id()
+            self.conteudo()
 
     def update(self):
-
         self.frame()
 
         # Entry de custo de aquisição
-        self.label_custo = tk.Label(self.frame_principal, text="Custo de aquisição:", style="inverse-light")
+        self.label_custo = ttk.Label(self.frame_principal, text="Custo de aquisição:", style="inverse-light")
         self.label_custo.pack(pady=10, padx=10)
 
-        self.custo_aquisicao = tk.Entry(self.frame_principal, width=30)
+        self.custo_aquisicao = ttk.Entry(self.frame_principal, width=30)
         self.custo_aquisicao.pack(pady=10, padx=10)
 
         # Checkbox de restauração
         opcoes = []
         for categoria in self.categorias:
             opcoes.append(categoria.nome)
-        tipo_label = tk.Label(self.frame_principal, text="Ajustes:", style="inverse-light")
+        tipo_label = ttk.Label(self.frame_principal, text="Ajustes:", style="inverse-light")
         tipo_label.pack()
 
         # Frame para os checkboxes
-        checkbox_frame = tk.Frame(self.frame_principal)
+        checkbox_frame = ttk.Frame(self.frame_principal)
         checkbox_frame.pack(padx=10, pady=10)
 
         # Campo de detalhes
-        self.label_desc = tk.Label(self.frame_principal, text="Detalhes:", style="inverse-light")
+        self.label_desc = ttk.Label(self.frame_principal, text="Detalhes:", style="inverse-light")
         self.label_desc.pack(pady=10, padx=10)
 
-        self.entry_descricao = tk.Entry(self.frame_principal, width=30)
+        self.entry_descricao = ttk.Entry(self.frame_principal, width=30)
         self.entry_descricao.pack(pady=10, padx=10)
 
         # Criando listbox
@@ -289,7 +289,7 @@ class UpdatePeca(TelaPadrao):
         ttk.Button(
             self.frame_principal,
             text="Retornar",
-            command=self.controller.tela_menu,
+            command=self.controladorPeca.tela_menu,
             bootstyle="warning",
             width=30,
         ).pack(padx=10, pady=10)
@@ -326,8 +326,8 @@ class UpdatePeca(TelaPadrao):
             'preco': 0
         }
 
-        self.controller.update(dados_update)
-        self.controller.tela_menu()
+        self.controladorPeca.update(dados_update)
+        self.controladorPeca.tela_menu()
     def frame(self):
         self.frame_principal = ttk.Frame(self,
                                     width=770,
@@ -346,20 +346,17 @@ class UpdatePeca(TelaPadrao):
         titulo_label.pack(pady=10, padx=10)
 
 
-class MostrarPeca(tk.Frame):
-    def __init__(self, master, controller, lista_pecas=None):
-        super().__init__(master)
-        self.controller = controller
-        self.frame = None
+class MostrarPeca(TelaPadrao):
+    def __init__(self, master, controlador, controladorUsuario, controladorPeca, lista_pecas=None):
         self.pecas = lista_pecas or []
-        self.mostrar()
+        self.controladorPeca = controladorPeca
+        super().__init__(master, controlador, controladorUsuario)
 
-    def mostrar(self):
-        self.frame = ttk.Labelframe(self, text="Peças disponíveis:")
-        self.frame.pack(padx=10, pady=10)
+    def conteudo(self):
+        self.frame()
 
         tree = ttk.Treeview(
-            self.frame,
+            self.frame_principal,
             columns=("Custo de aquisição", "Descrição", "Status",
                      "Restaurações"),
             bootstyle="success",
@@ -372,7 +369,7 @@ class MostrarPeca(tk.Frame):
         tree.heading("Restaurações", text="Restaurações")
 
         for peca in self.pecas:
-            if isinstance(peca, StatusRestauracao):
+            if isinstance(peca.status, StatusRestauracao):
                 categorias_lista = []
                 for ct in peca.status.categorias:
                     categorias_lista.append(ct.nome)
@@ -393,39 +390,52 @@ class MostrarPeca(tk.Frame):
         tree.pack(padx=10, pady=10)
 
         ttk.Button(
-            self.frame,
+            self.frame_principal,
             text="Retornar",
-            command=self.controller.tela_menu,
+            command=self.controladorPeca.tela_menu,
             bootstyle="warning",
             width=30,
         ).pack(padx=10, pady=10)
 
+    def frame(self):
+        self.frame_principal = ttk.Frame(self,
+                                         width=770,
+                                         height=608,
+                                         padding=20,
+                                         style='light')
 
-class ApagarPeca(tk.Frame):
-    def __init__(self, master, controller):
-        super().__init__(master)
-        self.mensagem_erro = None
-        self.frame = None
-        self.controller = controller
-        self.get_id()
+        self.frame_principal.pack(fill="none",
+                                  expand=False,
+                                  pady=32)
 
-    def get_id(self):
-        if not self.frame:
-            self.frame = ttk.Labelframe(self,
-                                        text="Apagar",
-                                        bootstyle="danger")
-            self.frame.pack(padx=10, pady=10)
+        titulo_label = ttk.Label(self.frame_principal,
+                                 text="MOSTRAR PEÇA",
+                                 style="inverse-light",
+                                 font=("Helvetica", 14, "bold"))
+        titulo_label.pack(pady=10, padx=10)
+
+
+class ApagarPeca(TelaPadrao):
+    def __init__(self, master, controlador, controladorUsuario, controladorPeca):
+        self.controladorPeca = controladorPeca
+        self.frame_principal = None
+        super().__init__(master, controlador, controladorUsuario)
+
+
+    def conteudo(self):
+        if not self.frame_principal:
+            self.frame()
 
             label_peca_id = tk.Label(
-                self.frame, text="Insira o id da peça a ser apagada:"
+                self.frame_principal, text="Insira o id da peça a ser apagada:"
             )
             label_peca_id.pack(padx=10, pady=10)
 
-            self.entry_peca_id = tk.Entry(self.frame, width=30)
+            self.entry_peca_id = tk.Entry(self.frame_principal, width=30)
             self.entry_peca_id.pack(padx=10, pady=10)
 
             ttk.Button(
-                self.frame,
+                self.frame_principal,
                 text="Apagar",
                 command=self.checar_id,
                 bootstyle="danger",
@@ -433,23 +443,40 @@ class ApagarPeca(tk.Frame):
             ).pack(padx=10, pady=10)
 
             ttk.Button(
-                self.frame,
+                self.frame_principal,
                 text="Retornar",
-                command=self.controller.tela_menu,
+                command=self.controladorPeca.tela_menu,
                 bootstyle="warning",
                 width=30,
             ).pack(padx=10, pady=10)
 
     def checar_id(self):
-        resposta = self.controller.get_peca(self.entry_peca_id.get())
+        resposta = self.controladorPeca.get_peca(self.entry_peca_id.get())
         if resposta:
             self.id_peca = resposta.id
-            self.frame.pack_forget()
+            self.frame_principal.pack_forget()
             self.retornar()
         else:
             messagebox.showinfo("Erro", "Por favor informe um id válido.")
-            self.get_id()
+            self.conteudo()
 
     def retornar(self):
-        self.controller.apagar(self.id_peca)
-        self.controller.tela_menu()
+        self.controladorPeca.apagar(self.id_peca)
+        self.controladorPeca.tela_menu()
+
+    def frame(self):
+        self.frame_principal = ttk.Frame(self,
+                                         width=770,
+                                         height=608,
+                                         padding=20,
+                                         style='light')
+
+        self.frame_principal.pack(fill="none",
+                                  expand=False,
+                                  pady=32)
+
+        titulo_label = ttk.Label(self.frame_principal,
+                                 text="APAGAR PEÇA",
+                                 style="inverse-light",
+                                 font=("Helvetica", 14, "bold"))
+        titulo_label.pack(pady=10, padx=10)

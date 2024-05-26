@@ -92,22 +92,21 @@ class ControladorPeca:
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = UpdatePeca(self.root, self.controlador,
-                                        self.controlador_usuarios, self, self.ctdao.get_all())
+        self.tela_atual = UpdatePeca(self.root, self.controlador, self.controlador_usuarios, self, self.ctdao.get_all())
         self.tela_atual.pack()
 
     def tela_mostrar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = MostrarPeca(self.root, self, self.pdao.get_all())
+        self.tela_atual = MostrarPeca(self.root, self.controlador, self.controlador_usuarios, self, self.pdao.get_all())
         self.tela_atual.pack()
 
     def tela_apagar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = ApagarPeca(self.root, self)
+        self.tela_atual = ApagarPeca(self.root, self.controlador, self.controlador_usuarios, self)
         self.tela_atual.pack()
 
     def tela_rest_p_venda(self, dados=None):
