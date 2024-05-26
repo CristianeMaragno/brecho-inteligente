@@ -28,8 +28,8 @@ class TelaEditCalculadora(TelaPadrao):
         frame = ttk.Frame(canvas, padding=(80,20), style='light')
         canvas.create_window((0, 0), window=frame, anchor='center')
 
-        categorias = ['Lavar', 'Passar', 'Reparo de Falhas', 'Restauração de Detalhes', 'Remoção de Manchas',
-                    'Tingimento', 'Customizacao', 'TaxaDeLucro']
+        categorias = ['Lavar', 'Passar', 'Reparar danos', 'Restaurar detalhes', 'Remover manchas',
+                    'Tingir', 'Customizar', 'Taxa de Lucro']
 
         self.campos_custo = {}
 

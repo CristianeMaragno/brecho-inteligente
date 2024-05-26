@@ -23,9 +23,7 @@ class TelaCriarUsuario(TelaPadrao):
                                padding=20,
                                style='light')
 
-        main_frame.pack(fill="none",
-                        expand=False,
-                        pady=32)
+        main_frame.grid(row=1, column=0, padx=10, pady=32)
 
 
         # Nome

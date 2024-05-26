@@ -15,7 +15,7 @@ class MenuPeca(tk.Frame):
     def abrir_menu(self):
 
         frame = ttk.Labelframe(self, text="Menu peças")
-        frame.pack(padx=10, pady=10)
+        frame.grid(row=1, column=0, padx=10, pady=32)
 
         self.button1 = ttk.Button(
             frame,

@@ -229,9 +229,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
                                 padding=20,
                                 style='light')
 
-        self.frame_principal.pack(fill="none",
-                         expand=False,
-                         pady=32)
+        self.frame_principal.grid(row=1, column=0, padx=10, pady=32)
 
         self.titulo = ttk.Label(self.frame_principal,
                                  text="Disponibilização de peça em restauração para a venda",
@@ -401,9 +399,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
                                 padding=20,
                                 style='light')
 
-        self.frame_principal.pack(fill="none",
-                         expand=False,
-                         pady=32)
+        self.frame_principal.grid(row=1, column=0, padx=10, pady=32)
 
         self.titulo = ttk.Label(self.frame_principal,
                                  text=self.peca.id,
