@@ -18,16 +18,13 @@ class TelaEditCalculadora(TelaPadrao):
         self.label = ttk.Label(frame_container, text="CALCULADORA", style="inverse-light", font=("Helvetica", 12, "bold"))
         self.label.grid(row=0, column=0, pady=10)
 
-        # Criando um Canvas para conter os widgets
         canvas = tk.Canvas(frame_container)
         canvas.grid(row=1, column=0)
 
-        # Adicionando uma barra de rolagem vertical
         scrollbar = Scrollbar(frame_container, orient=VERTICAL, command=canvas.yview)
         scrollbar.grid(row=1, column=1, sticky="ns")
         canvas.config(yscrollcommand=scrollbar.set)
 
-        # Criando um frame dentro do Canvas para conter os widgets
         frame = ttk.Frame(canvas, padding=(80,20), style='light')
         canvas.create_window((0, 0), window=frame, anchor='center')
 
@@ -50,16 +47,14 @@ class TelaEditCalculadora(TelaPadrao):
             campo_custo.pack(padx=10, pady=5, side="right")
             self.campos_custo[categoria] = campo_custo
 
-        canvas.update_idletasks()  # Atualiza o tamanho do canvas para que a barra de rolagem funcione corretamente
-
-        # Configurando o tamanho do Canvas
+        canvas.update_idletasks()  # Atualiza o tamanho do canvas
         canvas.config(scrollregion=canvas.bbox("all"))
 
         self.mensagem_erro_label = ttk.Label(frame_container, style="light.inverse.TLabel", foreground="red")
-        self.mensagem_erro_label.grid(row=1, column=0, pady=10)
+        self.mensagem_erro_label.grid(row=2, column=0, pady=10)
 
         botao_salvar = ttk.Button(frame_container, text="Salvar", command=self.salvar_custos)
-        botao_salvar.grid(row=2, column=0, pady=10)
+        botao_salvar.grid(row=3, column=0, pady=10)
 
     def salvar_custos(self):
         mensagens_erro = []
@@ -85,7 +80,7 @@ class TelaEditCalculadora(TelaPadrao):
 
         if mensagens_erro:
             mensagem_erro_str = "\n".join(mensagens_erro)
-            self.exibir_mensagem_erro('salvo, exceto:\n' + mensagem_erro_str)
+            self.exibir_mensagem_erro('Salvo, exceto:\n' + mensagem_erro_str)
         else:
             self.exibir_mensagem_erro('Salvo')
 
@@ -93,4 +88,4 @@ class TelaEditCalculadora(TelaPadrao):
         if mensagem == 'Salvo':
             self.mensagem_erro_label.config(text=mensagem, foreground="green")
         else:
-            self.mensagem_erro_label.config(text=mensagem)
+            self.mensagem_erro_label.config(text=mensagem, foreground="red")
