@@ -3,14 +3,16 @@ from limite.tela_catalogo import TelaCatalogo
 from persistencia.usuario_dao import UsuarioDAO
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_peca import ControladorPeca
+from controle.controlador_vendas import ControladorVendas
 
 
 class ControladorSistema:
 
     def __init__(self, root):
         self.root = root
-        self.root.geometry("950x700")
+        self.root.geometry("1000x600")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
+        self.__controlador_vendas = ControladorVendas(self.root, self, self.__controlador_usuarios)
         self.__controlador_pecas = ControladorPeca(self.root, self, self.__controlador_usuarios)
         self.tela_atual = None
 
@@ -19,7 +21,7 @@ class ControladorSistema:
             None
         else:
             self.controlador_usuarios.criar_usuario(
-                0, "Administrador Padrão", "adm0", "0", 1, False
+                0, "Administrador Padrão", "adm0", "0", '20/20/2000', 1, False
             )
 
     def tela_catalogo(self):
@@ -49,6 +51,13 @@ class ControladorSistema:
         self.tela_atual = self.__controlador_usuarios.abre_tela_criar_usuario()
         self.tela_atual.pack()
 
+    def tela_registrar_venda(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = self.__controlador_vendas.abre_tela_registrar_venda()
+        self.tela_atual.pack()
+
     def tela_login(self, erro=None):
         if self.tela_atual:
             self.tela_atual.pack_forget()
@@ -71,6 +80,10 @@ class ControladorSistema:
     
         self.tela_atual = self.controlador_usuarios.abre_tela_menu()
         self.tela_atual.pack()
+
+    @property
+    def controlador_pecas(self):
+        return self.__controlador_pecas
 
     @property
     def controlador_usuarios(self):

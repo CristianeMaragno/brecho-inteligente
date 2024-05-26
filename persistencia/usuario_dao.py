@@ -6,14 +6,14 @@ class UsuarioDAO(DAO):
     def __init__(self):
         super().__init__()
         super().connect()
-        super().create_table('users', {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'papel': 'INTEGER'})
-    
+        super().create_table('users', {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'nome': 'TEXT', 'email': 'TEXT', 'senha': 'TEXT', 'nascimento_data': 'TEXT', 'papel': 'INTEGER'})
+
     def add(self, usuario: Usuario):
         data = [
-            (usuario.nome, usuario.email, usuario.senha, usuario.papel),
+            (usuario.nome, usuario.email, usuario.senha, usuario.nascimento, usuario.papel),
         ]
 
-        super().insert_data('users (nome, email, senha, papel)', data)
+        super().insert_data('users (nome, email, senha, nascimento_data, papel)', data)
 
 
     def update(self, usuario: Usuario):
@@ -21,6 +21,7 @@ class UsuarioDAO(DAO):
             "nome": usuario.nome,
             "email": usuario.email,
             "senha": usuario.senha,
+            "nascimento_data": usuario.nascimento,
             "papel": usuario.papel
         }
         condition = "id = " + str(usuario.identificador)
@@ -33,7 +34,7 @@ class UsuarioDAO(DAO):
         rows = super().fetch_data('users')
         response = []
         for row in rows:
-            usuario = Usuario(row[0], row[1], row[2], row[3], row[4])
+            usuario = Usuario(row[0], row[1], row[2], row[3], row[4], row[5])
             response.append(usuario)
 
         return response
@@ -42,22 +43,22 @@ class UsuarioDAO(DAO):
         query = "SELECT * FROM users WHERE id = %s" % (codigo)
         usuario = self.executar(query)
         if usuario:
-            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
+            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4], usuario[5])
         else:
             return None
-    
+
     def pegar_por_nome(self, nome):
         query = "SELECT * FROM users WHERE nome = '%s'" % nome
         usuario = self.executar(query)
         if usuario:
-            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4])
+            return Usuario(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4], usuario[4])
         else:
             return None
 
 
     def executar(self, custom_query):
         return super().execute_query_one_value(custom_query)
-    
+
     def fazer_login(self, email, senha):
         # Conectar ao banco de dados SQLite
         self.connect()
@@ -70,7 +71,7 @@ class UsuarioDAO(DAO):
         self.disconnect()
 
         if data:
-            usuario = Usuario(data[0], data[1], data[2], data[3], data[4])
+            usuario = Usuario(data[0], data[1], data[2], data[3], data[4], data[5])
             return usuario
         else:
             return None
