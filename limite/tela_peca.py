@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 import ttkbootstrap as ttk
+from persistencia.categorias_dao import CategoriasDAO as ctdao
+from persistencia.categorias_dao import CategoriasDAO as ctdao
 from entidade.categoria import Categorias as ct
 
 
@@ -60,10 +62,20 @@ class MenuPeca(tk.Frame):
         )
         self.button5.pack(padx=10, pady=10)
 
+        self.button6 = ttk.Button(
+            frame,
+            text="Restauração para a venda",
+            command=self.controller.tela_rest_p_venda,
+            bootstyle="secondary",
+            width=30,
+        )
+        self.button6.pack(padx=10, pady=10)
+
 
 class RegistrarPeca(tk.Frame):
-    def __init__(self, master, controller):
+    def __init__(self, master, controller, categorias):
         super().__init__(master)
+        self.categorias = categorias
         self.controller = controller
         self.frame = None
         self.registrar()
@@ -81,7 +93,10 @@ class RegistrarPeca(tk.Frame):
         self.custo_aquisicao = ttk.Entry(self.frame, width=30)
         self.custo_aquisicao.pack(pady=10, padx=10)
 
-        opcoes = ct.tipos.values()
+        opcoes = []
+        for categoria in self.categorias:
+            opcoes.append(categoria.nome)
+
         tipo_label = ttk.Label(self.frame, text="Ajustes:")
         tipo_label.pack()
 
@@ -134,11 +149,11 @@ class RegistrarPeca(tk.Frame):
             )
 
     def retornar(self):
-        selecionados = self.listbox.curselection()
-        ajustes = [self.listbox.get(idx) for idx in selecionados]
+        ajustes = []
+        ajustes = self.listbox.curselection()
 
         if not ajustes:
-            ajustes.append(ct.tipos["NENHUM"])
+            ajustes.append(0)
 
         dados = {
             "descrição": self.entry_descricao.get(),
@@ -189,7 +204,7 @@ class UpdatePeca(tk.Frame):
     def checar_id(self):
         resposta = self.controller.get_peca(self.entry_peca_id.get())
         if resposta:
-            self.id_peca = resposta.id
+            self.peca = resposta
             self.frame.pack_forget()
             self.update()
         else:
@@ -259,19 +274,26 @@ class UpdatePeca(tk.Frame):
             )
 
     def retornar(self):
-        selecionados = self.listbox.curselection()
-        ajustes = [self.listbox.get(idx) for idx in selecionados]
-        if not ajustes:
-            ajustes.append(ct.tipos["NENHUM"])
+        ajustes = []
+        ajustes = self.listbox.curselection()
 
-        dados = {
-            "id": self.id_peca,
-            "descrição": self.entry_descricao.get(),
-            "tipos_restauração": ajustes,
-            "imagem": "",
-            "custo_aquisição": self.custo_aquisicao.get(),
+        if not ajustes:
+            ajustes.append(0)
+
+        self.peca.descricao = self.entry_descricao.get()
+        self.peca.custo_aquisicao = self.custo_aquisicao.get()
+
+        dados_update = {
+            'id': self.peca.id,
+            'custo_aquisicao': self.peca.custo_aquisicao,
+            'descricao': self.peca.descricao,
+            'status': 'em_restauracao',
+            'ajustes': ajustes,
+            'imagem': '',
+            'titulo': '',
         }
-        self.controller.update(dados)
+
+        self.controller.update(dados_update)
         self.controller.tela_menu()
 
 
@@ -301,7 +323,10 @@ class MostrarPeca(tk.Frame):
         tree.heading("Restaurações", text="Restaurações")
 
         for peca in self.pecas:
-            categorias = ", ".join(peca.status.categorias)
+            categorias_lista = []
+            for ct in peca.status.categorias:
+                categorias_lista.append(ct.nome)
+            categorias = ", ".join(categorias_lista)
             tree.insert(
                 "",
                 "end",

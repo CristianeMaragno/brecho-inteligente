@@ -13,7 +13,7 @@ class ControladorSistema:
         self.root.geometry("1000x600")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_vendas = ControladorVendas(self.root, self, self.__controlador_usuarios)
-        self.__controlador_pecas = ControladorPeca(self.root, self)
+        self.__controlador_pecas = ControladorPeca(self.root, self, self.__controlador_usuarios)
         self.tela_atual = None
 
     def criar_adm_padrao(self):
