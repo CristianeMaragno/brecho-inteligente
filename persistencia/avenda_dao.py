@@ -7,8 +7,9 @@ class AVendaDAO(DAO):
     def __init__(self):
         super().__init__()
         super().connect()
-        super().create_table('status_avenda',
-                             {'vendido': 'INTEGER', 'id': 'TEXT PRIMARY KEY'})
+        super().create_table(
+            "status_avenda", {"vendido": "INTEGER", "id": "TEXT PRIMARY KEY"}
+        )
 
     def add(self, st: StatusAVenda):
         if not self.exists(st.id):
@@ -17,18 +18,20 @@ class AVendaDAO(DAO):
             else:
                 vendido = 0
             data = [(vendido, st.id)]
-            super().insert_data('status_avenda', data)
+            super().insert_data("status_avenda", data)
         else:
-            print(f"O id '{st.id}' já existe na tabela status_avenda. A inserção foi ignorada.")
+            print(
+                f"O id '{st.id}' já existe na tabela status_avenda. A inserção foi ignorada."
+            )
 
     def remove(self, codigo: str):
-        super().delete('status_avenda', 'id', codigo)
+        super().delete("status_avenda", "id", codigo)
 
     def get_by_id(self, codigo: str):
         query = f"SELECT * FROM status_avenda WHERE id = '{codigo}'"
         result = self.execute(query)
         if result:
-            vendido = json.loads(result[0][0])
+            vendido = result[0][0]
             if vendido:
                 vendido = True
             else:
@@ -38,12 +41,15 @@ class AVendaDAO(DAO):
             return None
 
     def update(self, st: StatusAVenda):
-        if st.vendido:
-            vendido = 1
-        else:
-            vendido = 0
-        query = f"UPDATE status_avenda SET vendido = '{vendido}' WHERE id = '{st.id}'"
-        self.execute(query)
+        with self.conn:
+            if st.vendido:
+                vendido = 1
+            else:
+                vendido = 0
+            query = (
+                f"UPDATE status_avenda SET vendido = '{vendido}' WHERE id = '{st.id}'"
+            )
+            self.execute(query)
 
     def execute(self, custom_query):
         return super().execute_query(custom_query)

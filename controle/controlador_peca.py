@@ -5,7 +5,10 @@ from limite.tela_peca import (
     UpdatePeca,
     MostrarPeca,
 )
-from limite.tela_rest_para_venda import TelaRestauracaoParaVenda1, TelaRestauracaoParaVenda2
+from limite.tela_rest_para_venda import (
+    TelaRestauracaoParaVenda1,
+    TelaRestauracaoParaVenda2,
+)
 from entidade.status_tipos.statusAVenda import StatusAVenda
 from entidade.peca import Peca
 from entidade.categoria import Categoria
@@ -14,8 +17,9 @@ from persistencia.peca_dao import PecaDAO as pdao
 from persistencia.categorias_dao import CategoriasDAO as ctdao
 from persistencia.restauracao_dao import RestauracaoDAO as strdao
 from persistencia.avenda_dao import AVendaDAO as savdao
-
 import tkinter as tk
+
+
 import hashlib
 import random
 
@@ -43,21 +47,19 @@ class ControladorPeca:
         return hex_hash[:length]
 
     def criar_categorias(self):
-        criar = self.ctdao.get_by_id('0')
+        criar = self.ctdao.get_by_id("0")
         if criar:
             return
-        
-        self.custo = self.controlador.controlador_calculadora.pegar_custo
 
         categorias = [
-            Categoria("0", 'Lavar', self.custo('Lavar')),
-            Categoria("1", 'Passar', self.custo('Passar')),
-            Categoria("2", 'Reparar danos', self.custo('Reparar danos')),
-            Categoria("3", 'Restaurar detalhes', self.custo('Restaurar detalhes')),
-            Categoria("4", 'Remover manchas', self.custo('Remover manchas')),
-            Categoria("5", 'Tingir', self.custo('Tingir')),
-            Categoria("6", 'Customizar', self.custo('Customizar')),
-            Categoria("7", 'Nenhum ajuste', 0.0)
+            Categoria("0", "Lavar", 0.0),
+            Categoria("1", "Passar", 0.0),
+            Categoria("2", "Reparar danos", 0.0),
+            Categoria("3", "Restaurar detalhes", 0.0),
+            Categoria("4", "Remover manchas", 0.0),
+            Categoria("5", "Tingir", 0.0),
+            Categoria("6", "Customizar", 0.0),
+            Categoria("7", "Nenhum ajuste", 0.0),
         ]
 
         for ct in categorias:
@@ -79,35 +81,57 @@ class ControladorPeca:
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = MenuPeca(self.root, self)
+        self.tela_atual = MenuPeca(
+            self.root, self.controlador, self.controlador_usuarios, self
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_registrar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = RegistrarPeca(self.root, self, self.ctdao.get_all())
+        self.tela_atual = RegistrarPeca(
+            self.root,
+            self.controlador,
+            self.controlador_usuarios,
+            self,
+            self.ctdao.get_all(),
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_update(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = UpdatePeca(self.root, self)
+        self.tela_atual = UpdatePeca(
+            self.root,
+            self.controlador,
+            self.controlador_usuarios,
+            self,
+            self.ctdao.get_all(),
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_mostrar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = MostrarPeca(self.root, self, self.pdao.get_all())
+        self.tela_atual = MostrarPeca(
+            self.root,
+            self.controlador,
+            self.controlador_usuarios,
+            self,
+            self.pdao.get_all(),
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_apagar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        self.tela_atual = ApagarPeca(self.root, self)
+        self.tela_atual = ApagarPeca(
+            self.root, self.controlador, self.controlador_usuarios, self
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_rest_p_venda(self, dados=None):
@@ -115,10 +139,21 @@ class ControladorPeca:
             self.tela_atual.pack_forget()
 
         if dados:
-            self.tela_atual = TelaRestauracaoParaVenda2(self.root, self.controlador, self.controlador_usuarios, self, dados)
+            self.tela_atual = TelaRestauracaoParaVenda2(
+                self.root,
+                self.controlador,
+                self.controlador_usuarios,
+                self,
+                dados,
+            )
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
         else:
-            self.tela_atual = TelaRestauracaoParaVenda1(self.root, self.controlador, self.controlador_usuarios, self)
+            self.tela_atual = TelaRestauracaoParaVenda1(
+                self.root,
+                self.controlador,
+                self.controlador_usuarios,
+                self,
+            )
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     # Métodos de tratamento de dados
@@ -147,9 +182,8 @@ class ControladorPeca:
             print("Erro na criação da peça!")
 
     def update(self, dados):
-
         status = None
-        if dados['status'] == 'em_restauracao':
+        if dados["status"] == "em_restauracao":
             categorias = []
             if dados["ajustes"]:
                 for ct_id in dados["ajustes"]:
@@ -164,8 +198,9 @@ class ControladorPeca:
             dados["descricao"],
             status,
             dados["custo_aquisicao"],
+            dados["titulo"],
             dados["imagem"],
-            dados["titulo"]
+            dados["preco"],
         )
 
         self.pdao.update(update_peca)

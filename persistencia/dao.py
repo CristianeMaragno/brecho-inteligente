@@ -1,6 +1,7 @@
 import sqlite3
 from abc import ABC
 
+
 class DAO(ABC):
     def __init__(self):
         self.db_name = "brecho.db"
@@ -16,13 +17,15 @@ class DAO(ABC):
             self.conn.close()
 
     def create_table(self, table_name, columns):
-        column_definitions = ', '.join([f"{col_name} {col_type}" for col_name, col_type in columns.items()])
+        column_definitions = ", ".join(
+            [f"{col_name} {col_type}" for col_name, col_type in columns.items()]
+        )
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_definitions})"
         self.cursor.execute(query)
         self.conn.commit()
 
     def insert_data(self, table_name, data):
-        placeholders = ', '.join(['?' for _ in range(len(data[0]))])
+        placeholders = ", ".join(["?" for _ in range(len(data[0]))])
         query = f"INSERT INTO {table_name} VALUES ({placeholders})"
         self.cursor.executemany(query, data)
         self.conn.commit()
@@ -38,13 +41,13 @@ class DAO(ABC):
         self.conn.commit()
 
     def update(self, table_name, set_values, condition):
-        set_clause = ', '.join([f"{column} = ?" for column in set_values.keys()])
+        set_clause = ", ".join([f"{column} = ?" for column in set_values.keys()])
         query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
         self.cursor.execute(query, tuple(set_values.values()))
         self.conn.commit()
 
-    def execute_query(self, query):
-        self.cursor.execute(query)
+    def execute_query(self, query, params=()):
+        self.cursor.execute(query, params)
         return self.cursor.fetchall()
 
     def execute_query_one_value(self, query):

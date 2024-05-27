@@ -14,8 +14,14 @@ class ControladorSistema:
         self.root.geometry("1000x800")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_calculadora = ControladorCalculadora(self.root, self)
-        self.__controlador_pecas = ControladorPeca(self.root, self, self.__controlador_usuarios)
-        self.__controlador_vendas = ControladorVendas(self.root, self, self.__controlador_usuarios)
+        self.__controlador_pecas = ControladorPeca(
+            self.root,
+            self,
+            self.__controlador_usuarios,
+        )
+        self.__controlador_vendas = ControladorVendas(
+            self.root, self, self.__controlador_usuarios
+        )
         self.tela_atual = None
 
     def criar_adm_padrao(self):
@@ -23,7 +29,7 @@ class ControladorSistema:
             None
         else:
             self.controlador_usuarios.criar_usuario(
-                0, "Administrador Padrão", "adm0", "0", '20/20/2000', 1, False
+                0, "Administrador Padrão", "adm0", "0", "20/20/2000", 1, False
             )
 
     def tela_catalogo(self):
@@ -79,7 +85,7 @@ class ControladorSistema:
     def tela_calculadora(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
-    
+
         self.tela_atual = self.controlador_calculadora.abre_tela_calculadora()
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
