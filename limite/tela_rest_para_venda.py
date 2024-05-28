@@ -219,21 +219,27 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
     def calcular_total(self):
         self.valor_total = 0
-        self.passou_validacao = True
-        for entry, categoria, feito in self.custo_entrys:
-            try:
+        self.passou_validacao = self.checar_valores()
+        if self.passou_validacao:
+            for entry, categoria, feito in self.custo_entrys:
                 if len(entry.get()) == 0:
                     self.valor_total += 0
                 else:
                     valor = float(entry.get())
                     if valor and feito.get():
                         self.valor_total += valor
+        else:
+            self.apresentar_total(self.valor_total)
+
+    def checar_valores(self):
+        for entry, categoria, feito in self.custo_entrys:
+            try:
+                if len(entry.get()) > 0:
+                    float(entry.get())
             except ValueError:
-                self.passou_validacao = False
-                messagebox.showinfo(
-                    "Erro", "Por favor informe valores válidos de custo."
-                )
-        self.apresentar_total(self.valor_total)
+                self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
+                return False
+        return True
 
     def apresentar_total(self, valor_total):
         self.total_label.destroy()
@@ -250,7 +256,6 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
         self.calcular_total()
         # Update dos valores adquiridos
-
         if self.passou_validacao:
             custo_total = self.valor_total
             self.peca_selecionada.status.custo_total = custo_total
@@ -263,6 +268,9 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
     def restore_descricao_placeholder(self, event):
         if not self.descricao_peca.get():
             self.descricao_peca.insert(0, self.peca_selecionada.descricao)
+
+    def apresentar_msg_erro(self, msg):
+        messagebox.showinfo("Erro", msg)
 
     def frame(self):
         self.frame_principal = ttk.Frame(
@@ -362,7 +370,9 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         )
         valor_dois.grid(row=1, column=1, padx=5, pady=5, sticky="e")
 
-        taxa_lucro = self.controlador.controlador_calculadora.pegar_custo("Taxa de Lucro")
+        taxa_lucro = self.controlador.controlador_calculadora.pegar_custo(
+            "Taxa de Lucro"
+        )
         valor_tres = ttk.Label(
             tabela_frame, text=taxa_lucro, font=("Helvetica", 12, "bold")
         )
@@ -398,9 +408,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             if float(preco) and titulo:
                 self.prosseguir()
         except ValueError:
-            messagebox.showinfo(
-                "Erro", "Por favor informe um título e um preço válido."
-            )
+            self.apresentar_msg_erro("Por favor informe um título e um preço válido.")
 
     def prosseguir(self):
 
@@ -447,6 +455,9 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
         if file_path:
             self.path_imagem = file_path
             self.load_and_display_image(file_path)
+
+    def apresentar_msg_erro(self, msg):
+        messagebox.showinfo("Erro", msg)
 
     def load_and_display_image(self, file_path):
         try:

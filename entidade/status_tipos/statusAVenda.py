@@ -24,4 +24,4 @@ class StatusAVenda(Status):
         self.__vendido = vendido
 
     def __str__(self):
-        return 'À venda'
+        return "À venda"

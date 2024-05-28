@@ -69,6 +69,8 @@ class ControladorSistema:
     def deslogar(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
+        if self.controlador_pecas.tela_atual:
+            self.controlador_pecas.tela_atual.pack_forget()
 
         self.controlador_usuarios.deslogar_usuario()
 

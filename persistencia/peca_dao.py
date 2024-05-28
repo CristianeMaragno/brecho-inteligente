@@ -83,9 +83,11 @@ class PecaDAO(DAO):
                 self.strdao.add(peca.status)
                 self.strdao.remove(old_peca.status.id)
             elif isinstance(peca.status, StatusAVenda):
-                if self.strdao.get_by_id(old_peca.status.id):
+                status_str = self.strdao.get_by_id(old_peca.status.id)
+                status_sav = self.savdao.get_by_id(old_peca.status.id)
+                if status_str:
                     self.strdao.remove(old_peca.status.id)
-                if self.savdao.get_by_id(old_peca.status.id):
+                if status_sav:
                     self.savdao.remove(old_peca.status.id)
                 self.savdao.add(peca.status)
 
