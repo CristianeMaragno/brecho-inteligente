@@ -7,9 +7,8 @@ class AVendaDAO(DAO):
     def __init__(self):
         super().__init__()
         super().connect()
-        super().create_table(
-            "status_avenda", {"vendido": "INTEGER", "id": "TEXT PRIMARY KEY"}
-        )
+        super().create_table('status_avenda',
+                             {'vendido': 'INTEGER', 'id': 'TEXT PRIMARY KEY', 'desconto': 'FLOAT', 'forma_pagamento': 'INTEGER'})
 
     def add(self, st: StatusAVenda):
         if not self.exists(st.id):
@@ -17,8 +16,8 @@ class AVendaDAO(DAO):
                 vendido = 1
             else:
                 vendido = 0
-            data = [(vendido, st.id)]
-            super().insert_data("status_avenda", data)
+            data = [(vendido, st.id, st.desconto, st.forma_pagamento)]
+            super().insert_data('status_avenda', data)
         else:
             print(
                 f"O id '{st.id}' já existe na tabela status_avenda. A inserção foi ignorada."
@@ -36,20 +35,17 @@ class AVendaDAO(DAO):
                 vendido = True
             else:
                 vendido = False
-            return StatusAVenda(vendido, result[0][1])
+            return StatusAVenda(vendido, result[0][1], result[0][2], result[0][3])
         else:
             return None
 
     def update(self, st: StatusAVenda):
-        with self.conn:
-            if st.vendido:
-                vendido = 1
-            else:
-                vendido = 0
-            query = (
-                f"UPDATE status_avenda SET vendido = '{vendido}' WHERE id = '{st.id}'"
-            )
-            self.execute(query)
+        if st.vendido:
+            vendido = 1
+        else:
+            vendido = 0
+        query = f"UPDATE status_avenda SET vendido = '{vendido}', desconto = '{st.desconto}', forma_pagamento = '{st.forma_pagamento}'  WHERE id = '{st.id}'"
+        self.execute(query)
 
     def execute(self, custom_query):
         return super().execute_query(custom_query)

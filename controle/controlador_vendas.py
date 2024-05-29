@@ -3,16 +3,17 @@ from limite.tela_registrar_venda import TelaRegistrarVenda
 from entidade.peca import Peca
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 
-
 class ControladorVendas:
 
-    def __init__(self, master, controlador, usuarios):
+    def __init__(self, master, controlador, controlador_usuarios):
         self.master = master
         self.controlador = controlador
-        self.usuarios = usuarios
+        self.controlador_usuarios = controlador_usuarios
+        self.__tela_registrar_venda = None
 
     def abre_tela_registrar_venda(self):
-        return TelaRegistrarVenda(self.master, self, self.controlador, self.usuarios)
+        self.__tela_registrar_venda = TelaRegistrarVenda(self.master, self, self.controlador, self.controlador_usuarios)
+        return self.__tela_registrar_venda
 
     def voltar(self):
         self.usuario = None
@@ -28,8 +29,23 @@ class ControladorVendas:
         if total == 0 or forma_pagamento is None:
             return False
 
-        #trocar status/atualizar preço da peça
-        return True
+        controlador_pecas = self.controlador.controlador_pecas
 
-    def altera_status_peca(self, peca):
-        pass
+        for peca in pecas:
+            dados_update = {
+                'id': peca["id"],
+                'custo_aquisicao': peca["custo_aquisicao"],
+                'descricao': peca["descricao"],
+                'status': 'a_venda',
+                'ajustes': [],
+                'imagem': peca["imagem"],
+                'titulo': peca["titulo"],
+                'preco': peca["preco"]
+            }
+
+            dadosVenda = {
+                'desconto': peca["desconto"],
+                'forma_pagamento': forma_pagamento
+            }
+            controlador_pecas.update(dados_update, dadosVenda)
+        return True
