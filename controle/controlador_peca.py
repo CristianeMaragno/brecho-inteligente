@@ -181,7 +181,7 @@ class ControladorPeca:
         else:
             print("Erro na criação da peça!")
 
-    def update(self, dados):
+    def update(self, dados, dadosVenda = None):
         status = None
         if dados["status"] == "em_restauracao":
             categorias = []
@@ -191,7 +191,10 @@ class ControladorPeca:
                     categorias.append(categoria)
                 status = StatusRestauracao(categorias)
         else:
-            status = StatusAVenda()
+            if dadosVenda is None:
+                status = StatusAVenda()
+            else:
+                status = StatusAVenda(True, None, dadosVenda["desconto"], dadosVenda["forma_pagamento"])
 
         update_peca = Peca(
             dados["id"],
