@@ -165,12 +165,16 @@ class RegistrarPeca(TelaPadrao):
     def input_tests(self):
         try:
             custo_aquisicao = float(self.custo_aquisicao.get())
-            if custo_aquisicao:
+            descricao = self.entry_descricao.get()
+            valor = 10 / len(descricao)
+            if custo_aquisicao and valor:
                 self.retornar()
         except ValueError:
             messagebox.showinfo(
-                "Erro", "Por favor informe um valorválido de custo de aquisição."
+                "Erro", "Por favor informe um valor válido de custo de aquisição."
             )
+        except Exception as e:
+            messagebox.showinfo("Erro", "Por favor informe uma descrição.")
 
     def retornar(self):
         ajustes = []
