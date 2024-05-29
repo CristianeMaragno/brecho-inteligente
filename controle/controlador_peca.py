@@ -204,7 +204,6 @@ class ControladorPeca:
         )
 
         self.pdao.update(update_peca)
-        print("Update feito com sucesso!")
 
     def mostrar(self, lista_dao):
         pass
