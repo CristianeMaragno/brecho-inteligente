@@ -223,12 +223,11 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         if self.passou_validacao:
             for entry, categoria, feito in self.custo_entrys:
                 if len(entry.get()) == 0:
-                    self.valor_total += 0
+                    self.valor_total += categoria.custo_padrao
                 else:
                     valor = float(entry.get())
                     if valor and feito.get():
                         self.valor_total += valor
-        else:
             self.apresentar_total(self.valor_total)
 
     def checar_valores(self):
@@ -427,7 +426,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             "preco": self.peca.preco,
         }
 
-        # Update DAO
+        # Update DAO,*
         self.controladorPeca.update(dados_update)
         self.controladorPeca.tela_menu()
 
@@ -462,7 +461,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
     def load_and_display_image(self, file_path):
         try:
             image = Image.open(file_path)
-            image = image.resize((300, 300), Image.ANTIALIAS)
+            image = image.resize((150, 150), Image.ANTIALIAS)
             image_tk = ImageTk.PhotoImage(image)
             self.image_label.config(image=image_tk)
             self.image_label.image = image_tk
