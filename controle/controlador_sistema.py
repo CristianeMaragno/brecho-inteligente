@@ -35,8 +35,12 @@ class ControladorSistema:
     def tela_catalogo(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
+        if self.controlador_pecas.tela_atual:
+            self.controlador_pecas.tela_atual.pack_forget()
 
-        self.tela_atual = TelaCatalogo(self.root, self, self.controlador_usuarios)
+        self.tela_atual = TelaCatalogo(
+            self.root, self, self.controlador_usuarios, self.__controlador_pecas
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):

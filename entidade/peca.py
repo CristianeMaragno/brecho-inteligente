@@ -1,18 +1,20 @@
 class Peca:
-    def __init__(self,
-                 id,
-                 descricao,
-                 status,
-                 custo_aquisicao,
-                 titulo=None,
-                 imagem=None,
-                 preco=None):
+    def __init__(
+        self,
+        id,
+        descricao,
+        status,
+        custo_aquisicao,
+        titulo=None,
+        imagem=None,
+        preco=None,
+    ):
         self.__id = id
         self.__descricao = descricao
-        self.__titulo = titulo or ''
+        self.__titulo = titulo or ""
         self.__status = status
         self.__custo_aquisicao = custo_aquisicao
-        self.__imagem = imagem or 'assets/sem-imagem.png'
+        self.__imagem = imagem or "assets/sem-imagem.png"
         self.__preco = preco or 0.0
 
     @property
