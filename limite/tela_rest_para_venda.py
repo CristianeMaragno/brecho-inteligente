@@ -21,29 +21,48 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         super().__init__(master, controlador, controladorUsuario)
 
     def conteudo(self):
+
+        # Cria o frma principal
         self.frame()
 
+        # Checa se há peças
+        ha_pecas = self.checar_se_ha_pecas()
+
+        # Se sim, cria o frame secundário e os frames direito e esquerdo
+        if ha_pecas:
+            self.frame_secundario = ttk.Frame(self.frame_principal, style="light")
+            self.frame_secundario.pack()
+
+            self.criar_frame_esquerdo()
+            self.criar_frame_direito()
+
+        # Se não, passa para a tela de que não há peças
+        else:
+            self.nao_ha_pecas()
+
+    def checar_se_ha_pecas(self):
+        # Pega todas as peças
         pecas = self.controladorPeca.pdao.get_all()
+
+        # Coloca todos os IDs das peças em restaução dentro
         self.ids_das_pecas = []
         if pecas:
             for peca in pecas:
                 if isinstance(peca.status, StatusRestauracao):
                     self.ids_das_pecas.append(peca.id)
+
+        # Arruma uma lista com os IDs das peças
         if self.ids_das_pecas:
             self.peca_selecionada = self.controladorPeca.pdao.get_by_id(
                 self.ids_das_pecas[0]
             )
 
-        self.frame_secundario = ttk.Frame(self.frame_principal, style="light")
-        self.frame_secundario.pack()
-
-        if self.peca_selecionada:
-            self.criar_frame_esquerdo()
-            self.criar_frame_direito()
-        else:
-            self.nao_ha_pecas()
+        # Retorna a primeira peça em restauração (se houver)
+        return self.peca_selecionada
 
     def nao_ha_pecas(self):
+
+        # Cria o label de que não há peças
         label = ttk.Label(
             self.frame_principal,
             text="Não há peças para colocar à venda.",
@@ -120,6 +139,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         self.descricao_peca.bind("<FocusOut>", self.restore_descricao_placeholder)
         self.descricao_peca.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 
+        # Botão de voltar ao menu
         self.botao_voltar = ttk.Button(
             self.frame_direito,
             text="Voltar",
@@ -128,6 +148,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         )
         self.botao_voltar.pack(padx=10, pady=10)
 
+        # Botão de enviar para a venda
         self.botao_enviar_venda = ttk.Button(
             self.frame_direito,
             text="Enviar para venda",
@@ -137,12 +158,14 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         self.botao_enviar_venda.pack(padx=10, pady=5)
 
     def apresentar_infos(self, event):
+        # Método chamado sempre que o ID é mudado no combobox do frame direito
         peca_selecionada_id = self.combobox.get()
         self.peca_selecionada = self.controladorPeca.pdao.get_by_id(peca_selecionada_id)
         self.criar_frame_direito()
         self.criar_frame_esquerdo()
 
     def criar_frame_esquerdo(self):
+        # Definindo o frame esquerdo
         self.frame_esquerdo = ttk.Frame(
             self.frame_secundario, width=770, height=608, padding=20, style="light"
         )
@@ -153,7 +176,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
         # Definindo a estrutura da tabela
 
-        # 1. Headers
+        # Headers
         label_coluna_1 = ttk.Label(
             frame_tabela, text="AJUSTES", font=("Helvetica", 9, "bold")
         )
@@ -172,7 +195,7 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         label_coluna_3.grid(row=0, column=2, padx=10, pady=10)
         label_coluna_4.grid(row=0, column=3, padx=10, pady=10)
 
-        # 2. Conteúdo
+        # Conteúdo
         categorias = self.peca_selecionada.status.categorias
         self.custo_entrys = []
 
@@ -198,12 +221,12 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
             i += 1
 
-        # 3. Botão calcular total
+        # Botão calcular total
         self.botao_calcular = ttk.Button(
             self.frame_esquerdo,
             text="Calcular total",
             width=30,
-            command=self.calcular_total,
+            command=self.apresentar_total,
         )
         self.botao_calcular.pack(padx=10, pady=10, expand=False)
 
@@ -219,48 +242,50 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
     def calcular_total(self):
         self.valor_total = 0
-        self.passou_validacao = self.checar_valores()
-        if self.passou_validacao:
-            for entry, categoria, feito in self.custo_entrys:
-                if len(entry.get()) == 0:
+        passou_validacao = True
+
+        # Validação dos valores de custo apresentados
+        for entry, categoria, feito in self.custo_entrys:
+            try:
+                custo = entry.get()
+                if len(custo) == 0:
                     self.valor_total += categoria.custo_padrao
-                else:
+                if len(custo) > 0:
                     valor = float(entry.get())
                     if valor and feito.get():
                         self.valor_total += valor
-            self.apresentar_total(self.valor_total)
-
-    def checar_valores(self):
-        for entry, categoria, feito in self.custo_entrys:
-            try:
-                if len(entry.get()) > 0:
-                    float(entry.get())
             except ValueError:
                 self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
-                return False
-        return True
+                passou_validacao = False
 
-    def apresentar_total(self, valor_total):
-        self.total_label.destroy()
-        texto = f"TOTAL: R${valor_total}"
-        self.total_label = ttk.Label(
-            self.frame_esquerdo,
-            text=texto,
-            style="inverse-light",
-            font=("Helvetica", 11, "bold"),
-        )
-        self.total_label.pack(padx=10, pady=10, expand=False)
+        return passou_validacao
+
+    def apresentar_total(self):
+        passou_validacao = self.calcular_total()
+        # Só apresenta o novo total na tela se ele passou a validação
+        if passou_validacao:
+            self.total_label.destroy()
+            texto = f"TOTAL: R${self.valor_total}"
+            self.total_label = ttk.Label(
+                self.frame_esquerdo,
+                text=texto,
+                style="inverse-light",
+                font=("Helvetica", 11, "bold"),
+            )
+            self.total_label.pack(padx=10, pady=10, expand=False)
 
     def prosseguir(self):
 
-        self.calcular_total()
+        passou_validacao = self.calcular_total()
+
         # Update dos valores adquiridos
-        if self.passou_validacao:
+        if passou_validacao:
             custo_total = self.valor_total
             self.peca_selecionada.status.custo_total = custo_total
             self.peca_selecionada.descricao = self.descricao_peca.get()
             self.controladorPeca.tela_rest_p_venda(self.peca_selecionada)
 
+    # Métodos auxiliares para apara e remover a descrição
     def clear_descricao_placeholder(self, event):
         self.descricao_peca.delete(0, tk.END)
 
@@ -268,10 +293,12 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         if not self.descricao_peca.get():
             self.descricao_peca.insert(0, self.peca_selecionada.descricao)
 
+    # Método que apresenta uma mensagem de erro
     def apresentar_msg_erro(self, msg):
         messagebox.showinfo("Erro", msg)
 
     def frame(self):
+        # Forma o frame principal
         self.frame_principal = ttk.Frame(
             self, width=770, height=608, padding=20, style="light"
         )
