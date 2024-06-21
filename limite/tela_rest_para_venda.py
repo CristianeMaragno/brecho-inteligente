@@ -22,13 +22,13 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
 
     def conteudo(self):
 
-        # Cria o frma principal
+        # Cria o frame principal
         self.frame()
 
         # Checa se há peças
         ha_pecas = self.checar_se_ha_pecas()
 
-        # Se sim, cria o frame secundário e os frames direito e esquerdo
+        # Se sim, cria o frame secundário e os frames direito e esquerdo (implementar com alt)
         if ha_pecas:
             self.frame_secundario = ttk.Frame(self.frame_principal, style="light")
             self.frame_secundario.pack()
@@ -45,17 +45,17 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         pecas = self.controladorPeca.pdao.get_all()
 
         # Coloca todos os IDs das peças em restaução dentro
-        self.ids_das_pecas = []
         if pecas:
+            self.ids_das_pecas = []
             for peca in pecas:
                 if isinstance(peca.status, StatusRestauracao):
                     self.ids_das_pecas.append(peca.id)
 
-        # Arruma uma lista com os IDs das peças
-        if self.ids_das_pecas:
-            self.peca_selecionada = self.controladorPeca.pdao.get_by_id(
-                self.ids_das_pecas[0]
-            )
+            # Arruma uma lista com os IDs das peças
+            if self.ids_das_pecas:
+                self.peca_selecionada = self.controladorPeca.pdao.get_by_id(
+                    self.ids_das_pecas[0]
+                )
 
         # Retorna a primeira peça em restauração (se houver)
         return self.peca_selecionada
@@ -255,14 +255,13 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
                     if valor and feito.get():
                         self.valor_total += valor
             except ValueError:
-                self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
                 passou_validacao = False
 
         return passou_validacao
 
     def apresentar_total(self):
         passou_validacao = self.calcular_total()
-        # Só apresenta o novo total na tela se ele passou a validação
+        # Só apresenta o novo total na tela se ele passou a validação (alt)
         if passou_validacao:
             self.total_label.destroy()
             texto = f"TOTAL: R${self.valor_total}"
@@ -273,17 +272,21 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
                 font=("Helvetica", 11, "bold"),
             )
             self.total_label.pack(padx=10, pady=10, expand=False)
+        else:
+            self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
 
     def prosseguir(self):
 
         passou_validacao = self.calcular_total()
 
-        # Update dos valores adquiridos
+        # Update dos valores adquiridos (alt)
         if passou_validacao:
             custo_total = self.valor_total
             self.peca_selecionada.status.custo_total = custo_total
             self.peca_selecionada.descricao = self.descricao_peca.get()
             self.controladorPeca.tela_rest_p_venda(self.peca_selecionada)
+        else:
+            self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
 
     # Métodos auxiliares para apara e remover a descrição
     def clear_descricao_placeholder(self, event):

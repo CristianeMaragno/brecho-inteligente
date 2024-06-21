@@ -109,7 +109,7 @@ class TelaCatalogo(TelaPadrao):
     def load_and_display_image(self, file_path, imagem_label):
         try:
             image = Image.open(file_path)
-            image = image.resize((150, 150), Image.ANTIALIAS)
+            image = image.resize((150, 150), Image.LANCZOS)
             image_tk = ImageTk.PhotoImage(image)
             imagem_label.config(image=image_tk)
             imagem_label.image = image_tk

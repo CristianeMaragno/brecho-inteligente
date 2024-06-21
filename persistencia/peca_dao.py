@@ -68,7 +68,7 @@ class PecaDAO(DAO):
             peca_data = result[0]
             status_rest = self.strdao.get_by_id(peca_data[2])
             status_avenda = self.savdao.get_by_id(peca_data[2])
-            tatus = None
+            status = None
             if status_rest:
                 status = status_rest
             elif status_avenda:
