@@ -5,7 +5,7 @@ from tkinter import messagebox
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from entidade.status_tipos.statusAVenda import StatusAVenda
 from entidade.status_tipos.statusReserva import StatusReserva
-from entidade.peca import Peca
+from datetime import datetime, timedelta
 
 class TelaRegistrarVenda(TelaPadrao):
     def __init__(self, master, controladorVendas, controladorSistema,
@@ -15,8 +15,6 @@ class TelaRegistrarVenda(TelaPadrao):
         self.total = 0
         self.pecas = []
 
-        #Para testes com reserva
-        self.peca_reserva = Peca("2", "teste", StatusReserva('Cris', '99840-2895'), 45, '', '', 40)
         super().__init__(master, controladorSistema, controladorUsuario)
 
     def conteudo(self):
@@ -101,11 +99,7 @@ class TelaRegistrarVenda(TelaPadrao):
     def adicionar_item(self):
         id = self.id_entry.get()
 
-        # Para testes com reserva
-        if id == "2":
-            peca = self.peca_reserva
-        else:
-            peca = self.controladorVendas.pegar_peca_por_id(id)
+        peca = self.controladorVendas.pegar_peca_por_id(id)
 
         if peca is None:
             self.mostrar_mensagem_erro("Nenhuma peça com esse id cadastrada.")
@@ -119,14 +113,17 @@ class TelaRegistrarVenda(TelaPadrao):
             self.mostrar_mensagem_erro("Esta peça já foi vendida.")
             return
 
-
         if isinstance(peca.status, StatusReserva):
-            nome = peca.status.nome
-            telefone = peca.status.telefone
-            menssagem = f"Esta peça está reservada para a pessoa {nome}, número de telefone {telefone}. Tem certeza que deseja adicionar essa peça na venda?"
-            resposta = self.mostrar_mensagem_confirmar(menssagem)
-            if not resposta:
-                return
+            date_format = "%d/%m/%Y"
+            data_limite = datetime.strptime(peca.status.data, date_format)
+            data_atual = datetime.now()
+            if data_limite > data_atual:
+                nome = peca.status.nome
+                telefone = peca.status.telefone
+                menssagem = f"Esta peça está reservada para a pessoa {nome}, número de telefone {telefone}. Tem certeza que deseja adicionar essa peça na venda?"
+                resposta = self.mostrar_mensagem_confirmar(menssagem)
+                if not resposta:
+                    return
 
         desconto_valido, desconto = self.desconto_valido(peca.preco)
         if not desconto_valido:
@@ -145,9 +142,7 @@ class TelaRegistrarVenda(TelaPadrao):
         self.total = self.total + (preco - desconto)
         self.update_total()
 
-        # Para testes com reserva
-        if id != "2":
-            self.pecas.append(peca)
+        self.pecas.append(peca)
         # Clear the input fields
         self.id_entry.delete(0, tk.END)
         self.discount_entry.delete(0, tk.END)

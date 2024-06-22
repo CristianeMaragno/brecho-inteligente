@@ -68,7 +68,9 @@ class TelaMenu(TelaPadrao):
 
         self.reserva = ttk.Button(self.frame_menu,
                                            text="Reserva",
-                                           width=30)
+                                           width=30,
+                                           command=self.controlador.tela_reserva
+                                  )
         self.reserva.pack(padx=10, pady=10)
 
         self.venda = ttk.Button(self.frame_menu,
