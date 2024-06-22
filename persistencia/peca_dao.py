@@ -2,10 +2,10 @@ from persistencia.dao import DAO
 from entidade.peca import Peca
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from entidade.status_tipos.statusAVenda import StatusAVenda
-
+from entidade.status_tipos.statusReserva import StatusReserva
 
 class PecaDAO(DAO):
-    def __init__(self, strdao, savdao):
+    def __init__(self, strdao, savdao, resdao):
         super().__init__()
         self.conn = None
         super().connect()
@@ -23,6 +23,7 @@ class PecaDAO(DAO):
         )
         self.strdao = strdao
         self.savdao = savdao
+        self.resdao = resdao
 
     def add(self, peca: Peca):
         data = [
@@ -54,11 +55,14 @@ class PecaDAO(DAO):
         for row in rows:
             status_rest = self.strdao.get_by_id(row[2])
             status_avenda = self.savdao.get_by_id(row[2])
+            status_reserva = self.resdao.get_by_id(row[2])
             status = None
             if status_rest:
                 status = status_rest
             elif status_avenda:
                 status = status_avenda
+            elif status_reserva:
+                status = status_reserva
             pecas.append(Peca(*row[:2], status, *row[3:]))
         return pecas
 
@@ -68,11 +72,14 @@ class PecaDAO(DAO):
             peca_data = result[0]
             status_rest = self.strdao.get_by_id(peca_data[2])
             status_avenda = self.savdao.get_by_id(peca_data[2])
-            tatus = None
+            status_reserva = self.resdao.get_by_id(peca_data[2])
+            status = None
             if status_rest:
                 status = status_rest
             elif status_avenda:
                 status = status_avenda
+            elif status_reserva:
+                status = status_reserva
             return Peca(*peca_data[:2], status, *peca_data[3:])
         return None
 
@@ -88,6 +95,14 @@ class PecaDAO(DAO):
                 if self.savdao.get_by_id(old_peca.status.id):
                     self.savdao.remove(old_peca.status.id)
                 self.savdao.add(peca.status)
+            elif isinstance(peca.status, StatusReserva):
+                status_sav = self.savdao.get_by_id(old_peca.status.id)
+                status_rev = self.resdao.get_by_id(old_peca.status.id)
+                if status_sav:
+                    self.savdao.remove(old_peca.status.id)
+                if status_rev:
+                    self.resdao.remove(old_peca.status.id)
+                self.resdao.add(peca.status)
 
             query = (
                 "UPDATE pecas SET descricao = ?, imagem = ?, status_id = ?, custo_aquisicao = ?, "

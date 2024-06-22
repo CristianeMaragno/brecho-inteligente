@@ -42,4 +42,7 @@ class StatusAVenda(Status):
         self.__forma_pagamento = forma_pagamento
 
     def __str__(self):
-        return 'À venda'
+        if self.__vendido:
+            return "Vendido"
+        else:
+            return "À venda"
