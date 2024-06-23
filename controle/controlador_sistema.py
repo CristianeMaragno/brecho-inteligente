@@ -11,7 +11,7 @@ class ControladorSistema:
 
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1000x800")
+        self.root.geometry("1500x800")
         self.__controlador_usuarios = ControladorUsuarios(self.root, self)
         self.__controlador_calculadora = ControladorCalculadora(self.root, self)
         self.__controlador_pecas = ControladorPeca(

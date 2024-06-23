@@ -9,6 +9,7 @@ from limite.tela_rest_para_venda import (
     TelaRestauracaoParaVenda1,
     TelaRestauracaoParaVenda2,
 )
+from limite.tela_busca import TelaBusca
 from entidade.status_tipos.statusAVenda import StatusAVenda
 from entidade.peca import Peca
 from entidade.categoria import Categoria
@@ -123,6 +124,18 @@ class ControladorPeca:
             self,
             self.pdao.get_all(),
         )
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
+
+    def tela_busca(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = TelaBusca(
+            self.root,
+            self.controlador,
+            self.controlador_usuarios,
+            self,
+            self.pdao.get_all())
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_apagar(self):
