@@ -48,8 +48,12 @@ class DAO(ABC):
 
     def execute_query(self, query, params=()):
         self.cursor.execute(query, params)
-        return self.cursor.fetchall()
+        response = self.cursor.fetchall()
+        self.conn.commit()
+        return response
 
     def execute_query_one_value(self, query):
         self.cursor.execute(query)
-        return self.cursor.fetchone()
+        response = self.cursor.fetchone()
+        self.conn.commit()
+        return response

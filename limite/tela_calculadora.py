@@ -49,6 +49,7 @@ class TelaEditCalculadora(TelaPadrao):
             custo_atual = float(self.__controlador_calculadora.pegar_custo(categoria))
 
             if custo_atual is None:
+                self.pula_iteracao()
                 continue
             
             frame_categoria = ttk.Frame(frame, style="light")
@@ -82,6 +83,9 @@ class TelaEditCalculadora(TelaPadrao):
         )
         botao_voltar.grid(row=4, column=0, pady=10)
 
+    def pula_iteracao(self):
+        print("pulou para próxima iteração")
+    
     def salvar_custos(self):
         self.mensagens_erro = []
 
@@ -89,12 +93,14 @@ class TelaEditCalculadora(TelaPadrao):
             valor = campo_custo.get()
 
             if valor == "":
+                self.pula_iteracao()
                 continue
 
             try:
                 valor_float = float(valor)
             except ValueError:
                 self.adicionar_mensagem_erro(categoria, "Valor inserido não é um número válido.")
+                self.pula_iteracao()
                 continue
 
             if valor_float < 0:

@@ -5,7 +5,7 @@ from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_peca import ControladorPeca
 from controle.controlador_calculadora import ControladorCalculadora
 from controle.controlador_vendas import ControladorVendas
-
+from controle.controlador_reservas import ControladorReservas
 
 class ControladorSistema:
 
@@ -22,6 +22,9 @@ class ControladorSistema:
         self.__controlador_vendas = ControladorVendas(
             self.root, self, self.__controlador_usuarios
         )
+        self.__controlador_reserva = ControladorReservas(
+            self.root, self, self.__controlador_usuarios
+        )
         self.tela_atual = None
 
     def criar_adm_padrao(self):
@@ -35,8 +38,12 @@ class ControladorSistema:
     def tela_catalogo(self):
         if self.tela_atual:
             self.tela_atual.pack_forget()
+        if self.controlador_pecas.tela_atual:
+            self.controlador_pecas.tela_atual.pack_forget()
 
-        self.tela_atual = TelaCatalogo(self.root, self, self.controlador_usuarios)
+        self.tela_atual = TelaCatalogo(
+            self.root, self, self.controlador_usuarios, self.__controlador_pecas
+        )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     def tela_usuarios(self):
@@ -98,6 +105,13 @@ class ControladorSistema:
             self.tela_atual.pack_forget()
 
         self.tela_atual = self.__controlador_vendas.abre_tela_registrar_venda()
+        self.tela_atual.pack(fill=tk.BOTH, expand=True)
+
+    def tela_reserva(self):
+        if self.tela_atual:
+            self.tela_atual.pack_forget()
+
+        self.tela_atual = self.__controlador_reserva.abre_tela_reserva()
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
     @property

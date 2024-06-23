@@ -11,6 +11,7 @@ from limite.tela_rest_para_venda import (
 )
 from limite.tela_busca import TelaBusca
 from entidade.status_tipos.statusAVenda import StatusAVenda
+from entidade.status_tipos.statusReserva import StatusReserva
 from entidade.peca import Peca
 from entidade.categoria import Categoria
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
@@ -18,6 +19,7 @@ from persistencia.peca_dao import PecaDAO as pdao
 from persistencia.categorias_dao import CategoriasDAO as ctdao
 from persistencia.restauracao_dao import RestauracaoDAO as strdao
 from persistencia.avenda_dao import AVendaDAO as savdao
+from persistencia.reserva_dao import ReservaDAO as resdao
 import tkinter as tk
 
 
@@ -30,7 +32,8 @@ class ControladorPeca:
         self.ctdao = ctdao()
         self.savdao = savdao()
         self.strdao = strdao(self.ctdao)
-        self.pdao = pdao(self.strdao, self.savdao)
+        self.resdao = resdao()
+        self.pdao = pdao(self.strdao, self.savdao, self.resdao)
         self.root = root
         self.controlador = controlador
         self.controlador_usuarios = controladorUsuarios
@@ -76,6 +79,9 @@ class ControladorPeca:
                 return None
         else:
             return None
+
+    def get_todas_pecas(self):
+        return self.pdao.get_all()
 
     # Métodos de navegação
     def tela_menu(self):
@@ -147,17 +153,17 @@ class ControladorPeca:
         )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
-    def tela_rest_p_venda(self, dados=None):
+    def tela_rest_p_venda(self, peca=None):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        if dados:
+        if peca:
             self.tela_atual = TelaRestauracaoParaVenda2(
                 self.root,
                 self.controlador,
                 self.controlador_usuarios,
                 self,
-                dados,
+                peca,
             )
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
         else:
@@ -194,7 +200,7 @@ class ControladorPeca:
         else:
             print("Erro na criação da peça!")
 
-    def update(self, dados):
+    def update(self, dados, dadosVenda=None, dadosReserva=None):
         status = None
         if dados["status"] == "em_restauracao":
             categorias = []
@@ -203,8 +209,17 @@ class ControladorPeca:
                     categoria = self.ctdao.get_by_id(str(ct_id))
                     categorias.append(categoria)
                 status = StatusRestauracao(categorias)
+        elif dados["status"] == "a_venda":
+            if dadosVenda is None:
+                status = StatusAVenda()
+            else:
+                status = StatusAVenda(
+                    True, None, dadosVenda["desconto"], dadosVenda["forma_pagamento"]
+                )
         else:
-            status = StatusAVenda()
+            status = StatusReserva(
+                dadosReserva["nome"], dadosReserva["telefone"], dadosReserva["data"]
+            )
 
         update_peca = Peca(
             dados["id"],

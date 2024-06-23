@@ -4,6 +4,8 @@ from limite.tela_padrao import TelaPadrao
 from tkinter import messagebox
 from entidade.status_tipos.statusRestauracao import StatusRestauracao
 from entidade.status_tipos.statusAVenda import StatusAVenda
+from entidade.status_tipos.statusReserva import StatusReserva
+from datetime import datetime, timedelta
 
 class TelaRegistrarVenda(TelaPadrao):
     def __init__(self, master, controladorVendas, controladorSistema,
@@ -11,6 +13,8 @@ class TelaRegistrarVenda(TelaPadrao):
         self.mensagem_erro = erro
         self.controladorVendas = controladorVendas
         self.total = 0
+        self.pecas = []
+
         super().__init__(master, controladorSistema, controladorUsuario)
 
     def conteudo(self):
@@ -36,11 +40,6 @@ class TelaRegistrarVenda(TelaPadrao):
         self.tree.heading('Preço', text='Preço')
         self.tree.heading('Desconto', text='Desconto')
 
-        '''
-        for i in range(10):
-             self.tree.insert('', tk.END, values=(f'Item {i+1}', f'R$ {i*10:.2f}', f'R$ {i:.2f}'))
-        '''
-
         self.tree.pack(fill=tk.BOTH, expand=True)
 
         # Create the form frame
@@ -60,7 +59,7 @@ class TelaRegistrarVenda(TelaPadrao):
         self.discount_entry.grid(row=1, column=1, pady=5, sticky='ew')
 
         # Add item button
-        add_button = tk.Button(self.form_frame, text="+", command=self.add_item)
+        add_button = tk.Button(self.form_frame, text="+", command=self.adicionar_item)
         add_button.grid(row=1, column=2, padx=5, pady=5)
 
         # Remove item button
@@ -97,8 +96,9 @@ class TelaRegistrarVenda(TelaPadrao):
     def tela_menu(self):
         self.controladorSistema.tela_menu()
 
-    def add_item(self):
+    def adicionar_item(self):
         id = self.id_entry.get()
+
         peca = self.controladorVendas.pegar_peca_por_id(id)
 
         if peca is None:
@@ -109,19 +109,23 @@ class TelaRegistrarVenda(TelaPadrao):
             self.mostrar_mensagem_erro("Esta peça não está disponível para venda.")
             return
 
-        '''
+        if isinstance(peca.status, StatusAVenda) and peca.status.vendido:
+            self.mostrar_mensagem_erro("Esta peça já foi vendida.")
+            return
+
         if isinstance(peca.status, StatusReserva):
-            nome = "Cris"
-            telefone = "111111111"
-            menssagem = f"Esta peça está reservada para a pessoa {nome}, número de telefone {telefone}. Tem certeza que deseja adicionar essa peça na venda?"
-            resposta = self.mostrar_mensagem_confirmar(menssagem)
-            if resposta:
-                #altera_status_peca(peca) no controlador
-                self.controladorVendas.altera_status_peca(peca)
-            else:
-                return
-        '''
-        desconto_valido, desconto = self.desconto_valido(48.15) #peca.preco
+            date_format = "%d/%m/%Y"
+            data_limite = datetime.strptime(peca.status.data, date_format)
+            data_atual = datetime.now()
+            if data_limite > data_atual:
+                nome = peca.status.nome
+                telefone = peca.status.telefone
+                menssagem = f"Esta peça está reservada para a pessoa {nome}, número de telefone {telefone}. Tem certeza que deseja adicionar essa peça na venda?"
+                resposta = self.mostrar_mensagem_confirmar(menssagem)
+                if not resposta:
+                    return
+
+        desconto_valido, desconto = self.desconto_valido(peca.preco)
         if not desconto_valido:
             self.mostrar_mensagem_erro("O valor do desconto é inválido.")
             return
@@ -131,14 +135,85 @@ class TelaRegistrarVenda(TelaPadrao):
             self.mostrar_mensagem_erro("Essa peça já foi adicionada na lista.")
             return
 
-        preco = 48.15 #peca.preco
+        preco = peca.preco
+
         self.tree.insert('', tk.END, values=(f'{peca.id}', f'{preco:.2f}', f'{desconto:.2f}'))
 
         self.total = self.total + (preco - desconto)
-        self.update_total_amount()
+        self.update_total()
+
+        self.pecas.append(peca)
         # Clear the input fields
         self.id_entry.delete(0, tk.END)
         self.discount_entry.delete(0, tk.END)
+
+    def remover_item(self):
+        item_id = self.pegar_item_selecionado()
+        if item_id is not None:
+            for item in self.tree.get_children():
+                if item == item_id:
+                    item_values = self.tree.item(item, 'values')
+                    self.tree.delete(item)
+                    self.total = self.total - (float(item_values[1]) - float(item_values[2]))
+                    self.update_total()
+                    break
+
+    def realizar_pagamento(self):
+        self.selecionar_forma_de_pagamento()
+
+    def selecionar_forma_de_pagamento(self):
+        self.payment_label = tk.Label(self.form_frame, text="Selecione forma de pagamento")
+        self.payment_label.grid(row=4, column=0, columnspan=3, pady=20, sticky='ew')
+
+        formas_pagamento = ["Cartão de crédito", "Cartão de débito", "Pix", "Dinheiro"]
+        self.payment_combobox = ttk.Combobox(self.form_frame, values=formas_pagamento, state="readonly")
+        self.payment_combobox.grid(row=5, column=0, columnspan=3, pady=20, sticky='ew')
+
+        self.confirm_button = tk.Button(self.form_frame, text="Confirmar", command=self.realizar_pagamento_update)
+        self.confirm_button.grid(row=6, column=0, columnspan=3, pady=20, sticky='ew')
+
+    def realizar_pagamento_update(self):
+        forma_pagamento = self.payment_combobox.get()
+        pecas = self.pegar_pecas_selecionadas()
+        pagamento = self.controladorVendas.realizar_pagamento(self.total, forma_pagamento, pecas)
+        if pagamento:
+            self.mostrar_mensagem_sucesso("Venda registrada com sucesso.")
+            self.controladorVendas.voltar()
+        else:
+            self.mostrar_mensagem_erro("Ocorreu um erro com o pagamento.")
+
+    def pegar_pecas_selecionadas(self):
+        pecas_descontos = []
+        descontos = []
+        for item in self.tree.get_children():
+            descontos.append(self.tree.item(item, 'values'))
+
+        for item in descontos:
+            peca_id = item[0]
+            desconto = item[2]
+
+            for peca in self.pecas:
+                if peca.id == peca_id:
+                    dados_update = {
+                        'id': peca.id,
+                        'custo_aquisicao': peca.custo_aquisicao,
+                        'descricao': peca.descricao,
+                        'status': 'a_venda',
+                        'ajustes': [],
+                        'imagem': peca.imagem,
+                        'titulo': peca.titulo,
+                        'preco': peca.preco,
+                        'desconto': desconto
+                    }
+                    pecas_descontos.append(dados_update)
+
+        return pecas_descontos
+
+    def pegar_item_selecionado(self):
+        selected_item = self.tree.selection()
+        if selected_item:
+            return selected_item[0]
+        return '0'
 
     def mostrar_mensagem_confirmar(self, message):
         response = messagebox.askyesno("Confirmação", message)
@@ -162,58 +237,14 @@ class TelaRegistrarVenda(TelaPadrao):
                 return True
         return False
 
-    def update_total_amount(self):
+    def update_total(self):
         self.total_amount_label.config(text=f"R$ {self.total:.2f}")
 
-    def remover_item(self):
-        item_id = self.pegar_item_selecionado()
-        if item_id is not None:
-            for item in self.tree.get_children():
-                if item == item_id:
-                    item_values = self.tree.item(item, 'values')
-                    self.tree.delete(item)
-                    self.total = self.total - (float(item_values[1]) - float(item_values[2]))
-                    self.update_total_amount()
-                    break
+    def mostrar_mensagem_erro(self, mensagem):
+        messagebox.showerror("Erro", mensagem)
 
-    def pegar_item_selecionado(self):
-        selected_item = self.tree.selection()
-        if selected_item:
-            return selected_item[0]
-        return '0'
-
-    def realizar_pagamento(self):
-        def realizar_pagamento_update():
-            forma_pagamento = self.payment_combobox.get()
-            pecas = []
-            for item in self.tree.get_children():
-                pecas.append(self.tree.item(item, 'values'))
-            pagamento = self.controladorVendas.realizar_pagamento(self.total, forma_pagamento, pecas)
-            if pagamento:
-                self.mostrar_mensagem_sucesso("Venda registrada com sucesso.")
-                self.controladorVendas.voltar()
-            else:
-                self.mostrar_mensagem_erro("Ocorreu um erro com o pagamento.")
-
-
-        def selecionar_forma_de_pagamento():
-            self.payment_label = tk.Label(self.form_frame, text="Selecione forma de pagamento")
-            self.payment_label.grid(row=4, column=0, columnspan=3, pady=20, sticky='ew')
-
-            formas_pagamento = ["Cartão de crédito", "Cartão de débito", "Pix", "Dinheiro"]
-            self.payment_combobox = ttk.Combobox(self.form_frame, values=formas_pagamento, state="readonly")
-            self.payment_combobox.grid(row=5, column=0, columnspan=3, pady=20, sticky='ew')
-
-            self.confirm_button = tk.Button(self.form_frame, text="Confirmar", command=realizar_pagamento_update)
-            self.confirm_button.grid(row=6, column=0, columnspan=3, pady=20, sticky='ew')
-
-        selecionar_forma_de_pagamento()
-
-    def mostrar_mensagem_erro(self, message):
-        messagebox.showerror("Erro", message)
-
-    def mostrar_mensagem_sucesso(self, message):
-        messagebox.showinfo("Sucesso", message)
+    def mostrar_mensagem_sucesso(self, mensagem):
+        messagebox.showinfo("Sucesso", mensagem)
 
 
 

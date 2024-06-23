@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from tkcalendar import Calendar
 from datetime import datetime, timedelta
-import tkcalendar
 from limite.tela_padrao import TelaPadrao
+from ttkbootstrap.widgets import DateEntry
 
 
 class TelaCriarUsuario(TelaPadrao):
@@ -58,13 +57,12 @@ class TelaCriarUsuario(TelaPadrao):
         self.repeat_password_entry.grid(row=3, column=1, padx=10, pady=5)
 
         # Data de nascimento
-        '''
         self.dob_label = tk.Label(main_frame, text="Data de nascimento:")
         self.dob_label.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
-        self.dob_calendar = Calendar(main_frame, selectmode="day", year=2000, month=1, day=1)
-        self.dob_calendra.pack(pady=20)
-        self.dob_calendra.grid(row=4, column=1, padx=5, pady=5)
-        '''
+        self.date_entry = tk.Entry(main_frame)
+        if (self.editar):
+            self.date_entry.insert(0, self.usuario.nascimento)
+        self.date_entry.grid(row=4, column=1, padx=10, pady=5)
 
         # Papel
         self.role_label = tk.Label(main_frame, text="Papel:")
@@ -76,8 +74,7 @@ class TelaCriarUsuario(TelaPadrao):
         self.role_combobox['values'] = ("Administrador", "Funcionário")
         self.role_combobox.current(0)
         if (self.editar):
-            papel = 'Administrador' if self.usuario.papel == 1 \
-                else 'Funcionário'
+            papel = 'Administrador' if self.usuario.papel == 1 else 'Funcionário'
             self.role_combobox.set(papel)
         self.role_combobox.grid(row=5, column=1, padx=10, pady=5)
 
@@ -96,13 +93,9 @@ class TelaCriarUsuario(TelaPadrao):
         email = self.email_entry.get()
         senha = self.password_entry.get()
         senha_repetida = self.repeat_password_entry.get()
-        #nascimento = self.dob_calendar.get_date()
-        nascimento = '12/01/2000'
+        nascimento = self.date_entry.get()
         papel = self.role_combobox.get()
         papel_int = 0
-
-        #correct bug of loading role
-        #correct bug of loading date
 
         if not nome or not email or not senha or not senha_repetida or not nascimento:
             messagebox.showerror("Campos inválidos", "Todos os campos devem ser preechidos. Tente de novo.")
@@ -112,16 +105,21 @@ class TelaCriarUsuario(TelaPadrao):
             messagebox.showerror("Senhas diferentes", "Senhas não são iguais. Tente de novo.")
             return
 
-        # Validate age (older than 18)
-        '''
-        nascimento_data = datetime.strptime(nascimento, "%m/%d/%y")
-        eighteen_years_ago = datetime.now() - timedelta(days=365 * 18)
-        if nascimento_data > eighteen_years_ago:
-            messagebox.showerror("Obrigação de idade", "Os usuários devem ser maiores de idade.")
-            return
-        '''
+        try:
+            nascimento_data = datetime.strptime(nascimento, "%d/%m/%Y")
+            if nascimento_data > datetime.now():
+                messagebox.showerror("Data inválida", "A data não pode ser maior que a atual.")
 
-        if(papel == 'Administrador'):
+            eighteen_years_ago = datetime.now() - timedelta(days=365 * 18)
+            if nascimento_data > eighteen_years_ago:
+                messagebox.showerror("Obrigação de idade", "Os usuários devem ser maiores de idade.")
+                return
+        except ValueError:
+            messagebox.showerror("Data inválida", "A data deve ser válida.")
+            return
+
+
+        if papel == 'Administrador':
             papel_int = 1
         else:
             papel_int = 2
