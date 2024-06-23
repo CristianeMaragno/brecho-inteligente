@@ -134,17 +134,17 @@ class ControladorPeca:
         )
         self.tela_atual.pack(fill=tk.BOTH, expand=True)
 
-    def tela_rest_p_venda(self, dados=None):
+    def tela_rest_p_venda(self, peca=None):
         if self.tela_atual:
             self.tela_atual.pack_forget()
 
-        if dados:
+        if peca:
             self.tela_atual = TelaRestauracaoParaVenda2(
                 self.root,
                 self.controlador,
                 self.controlador_usuarios,
                 self,
-                dados,
+                peca,
             )
             self.tela_atual.pack(fill=tk.BOTH, expand=True)
         else:
@@ -181,7 +181,7 @@ class ControladorPeca:
         else:
             print("Erro na criação da peça!")
 
-    def update(self, dados, dadosVenda = None):
+    def update(self, dados, dadosVenda=None):
         status = None
         if dados["status"] == "em_restauracao":
             categorias = []
@@ -194,7 +194,9 @@ class ControladorPeca:
             if dadosVenda is None:
                 status = StatusAVenda()
             else:
-                status = StatusAVenda(True, None, dadosVenda["desconto"], dadosVenda["forma_pagamento"])
+                status = StatusAVenda(
+                    True, None, dadosVenda["desconto"], dadosVenda["forma_pagamento"]
+                )
 
         update_peca = Peca(
             dados["id"],

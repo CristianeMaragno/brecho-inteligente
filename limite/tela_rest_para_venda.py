@@ -116,7 +116,8 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         )
         label_custo_aquisicao.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-        custo_aquisicao = f"R${self.peca_selecionada.custo_aquisicao}"
+        custo_aquisicao_float = self.peca_selecionada.custo_aquisicao
+        custo_aquisicao = f"R${custo_aquisicao_float}"
         label_valor_custo_aquisicao = ttk.Label(
             self.frame_peca_info,
             text=custo_aquisicao,
@@ -133,8 +134,9 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         )
         label_descricao.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
+        descricao_peca = self.peca_selecionada.descricao
         self.descricao_peca = ttk.Entry(self.frame_peca_info, bootstyle="primary")
-        self.descricao_peca.insert(0, self.peca_selecionada.descricao)
+        self.descricao_peca.insert(0, descricao_peca)
         self.descricao_peca.bind("<FocusIn>", self.clear_descricao_placeholder)
         self.descricao_peca.bind("<FocusOut>", self.restore_descricao_placeholder)
         self.descricao_peca.grid(row=2, column=1, padx=10, pady=10, sticky="w")
@@ -161,6 +163,9 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         # Método chamado sempre que o ID é mudado no combobox do frame direito
         peca_selecionada_id = self.combobox.get()
         self.peca_selecionada = self.controladorPeca.pdao.get_by_id(peca_selecionada_id)
+        self.atualiza_tela()
+
+    def atualiza_tela(self):
         self.criar_frame_direito()
         self.criar_frame_esquerdo()
 
@@ -263,17 +268,20 @@ class TelaRestauracaoParaVenda1(TelaPadrao):
         passou_validacao = self.calcular_total()
         # Só apresenta o novo total na tela se ele passou a validação (alt)
         if passou_validacao:
-            self.total_label.destroy()
-            texto = f"TOTAL: R${self.valor_total}"
-            self.total_label = ttk.Label(
-                self.frame_esquerdo,
-                text=texto,
-                style="inverse-light",
-                font=("Helvetica", 11, "bold"),
-            )
-            self.total_label.pack(padx=10, pady=10, expand=False)
+            self.atualiza_total()
         else:
             self.apresentar_msg_erro("Por favor informe valores válidos de custo.")
+
+    def atualiza_total(self):
+        self.total_label.destroy()
+        texto = f"TOTAL: R${self.valor_total}"
+        self.total_label = ttk.Label(
+            self.frame_esquerdo,
+            text=texto,
+            style="inverse-light",
+            font=("Helvetica", 11, "bold"),
+        )
+        self.total_label.pack(padx=10, pady=10, expand=False)
 
     def prosseguir(self):
 
@@ -418,7 +426,7 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             self.frame_principal,
             text="Colocar à venda",
             width=50,
-            command=self.checar_valores,
+            command=self.prosseguir,
         )
         self.botao_calcular.pack(padx=10, pady=10, expand=False)
 
@@ -435,30 +443,37 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             titulo = self.entry_titulo.get()
             preco = self.entry_preco.get()
             if float(preco) and titulo:
-                self.prosseguir()
+                return True
         except ValueError:
-            self.apresentar_msg_erro("Por favor informe um título e um preço válido.")
+            return False
 
     def prosseguir(self):
 
-        self.peca.titulo = self.entry_titulo.get()
-        self.peca.preco = self.entry_preco.get()
-        if self.path_imagem:
-            self.peca.imagem = self.path_imagem
+        passou_validacao = self.checar_valores()
 
-        dados_update = {
-            "id": self.peca.id,
-            "custo_aquisicao": self.peca.custo_aquisicao,
-            "descricao": self.peca.descricao,
-            "status": "a_venda",
-            "imagem": self.peca.imagem,
-            "titulo": self.peca.titulo,
-            "preco": self.peca.preco,
-        }
+        if passou_validacao:
 
-        # Update DAO,*
-        self.controladorPeca.update(dados_update)
-        self.controladorPeca.tela_menu()
+            self.peca.titulo = self.entry_titulo.get()
+            self.peca.preco = self.entry_preco.get()
+            if self.path_imagem:
+                self.peca.imagem = self.path_imagem
+
+            dados_update = {
+                "id": self.peca.id,
+                "custo_aquisicao": self.peca.custo_aquisicao,
+                "descricao": self.peca.descricao,
+                "status": "a_venda",
+                "imagem": self.peca.imagem,
+                "titulo": self.peca.titulo,
+                "preco": self.peca.preco,
+            }
+
+            # Update DAO,*
+            self.controladorPeca.update(dados_update)
+            self.controladorPeca.tela_menu()
+
+        else:
+            self.apresentar_msg_erro("Por favor informe um título e um preço válido.")
 
     def clear_titulo_placeholder(self, event):
         if self.entry_titulo.get() == "Título":
@@ -496,7 +511,8 @@ class TelaRestauracaoParaVenda2(TelaPadrao):
             self.image_label.config(image=image_tk)
             self.image_label.image = image_tk
         except Exception as e:
-            messagebox.showinfo("Erro", f"Erro ao carregar imagem: {e}")
+            self.path_imagem = False
+            self.apresentar_msg_erro("Erro ao carregar imagem.")
 
     def frame(self):
         self.frame_principal = ttk.Frame(
