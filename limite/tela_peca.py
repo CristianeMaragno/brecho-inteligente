@@ -46,8 +46,8 @@ class MenuPeca(TelaPadrao):
 
         self.button4 = ttk.Button(
             self.frame_principal,
-            text="Mostrar",
-            command=self.controladorPeca.tela_mostrar,
+            text="Buscar",
+            command=self.controladorPeca.tela_busca,
             bootstyle="secondary",
             width=30,
         )
