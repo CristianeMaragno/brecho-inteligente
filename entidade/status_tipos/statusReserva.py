@@ -1,12 +1,13 @@
 from entidade.status_tipos.status import Status
 
+
 class StatusReserva(Status):
     def __init__(self, nome, telefone, data, id=None):
-        super().__init__()
         self.__id = id or super().gen_id()
         self.__nome = nome
         self.__telefone = telefone
         self.__data = data
+        super().__init__()
 
     @property
     def nome(self):
